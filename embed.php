@@ -1,10 +1,13 @@
+<?php require 'player.php';?>
+
 <script>
 var config = {
-    source: '//api.corolive.nz/<?php echo "$camera"; ?>/stream.m3u8',
-    poster: '//api.corolive.nz/<?php echo "$camera"; ?>/snap.jpg',
+    source: 'https://api.corolive.nz/<?php echo $_GET['camera']; ?>/stream.m3u8',
+    poster: 'https://api.corolive.nz/<?php echo $_GET['camera']; ?>/snap.jpg',
     parentId: '#player',
-    watermark: "//corolive.nz/img/watermark.webp",
-    position: 'bottom-right',
+    watermark: "https://corolive.nz/img/watermark.webp",
+    position: 'top-right',
+    watermarkLink: 'https://corolive.nz',
     mute: true,
     autoPlay: true,
     actualLiveTime: true,

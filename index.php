@@ -28,8 +28,9 @@
             <div class="col-sm-3">
                 <div class="card text-center">
                     <div class="card-body">
-                        <a href="whitianga"><img src="https://api.corolive.nz/whitianga/snap.jpg" draggable="false"
-                                class="card-img-top" alt="Whitianga picker image"></a>
+                        <a href="whitianga"><img id="whitianga-thumbnail"
+                                src="https://api.corolive.nz/whitianga/snap.jpg" draggable="false" class="card-img-top"
+                                alt="Whitianga picker image"></a>
                         <h5 class="card-title text-center">Whitianga</h5>
                         <div class="center">
                             <a href="whitianga" class="btn btn-primary">Live</a>
@@ -43,8 +44,9 @@
             <div class="col-sm-3">
                 <div class="card text-center">
                     <div class="card-body">
-                        <a href="whangamata"><img src="https://api.corolive.nz/whangamata/snap.jpg" draggable="false"
-                                class="card-img-top" alt="Whangamata picker image"></a>
+                        <a href="whangamata"><img id="whangamata-thumbnail"
+                                src="https://api.corolive.nz/whangamata/snap.jpg" draggable="false" class="card-img-top"
+                                alt="Whangamata picker image"></a>
                         <h5 class="card-title text-center">Whangamata</h5>
                         <div class="center">
                             <a href="whangamata" class="btn btn-primary">Live</a>
@@ -58,8 +60,8 @@
             <div class="col-sm-3">
                 <div class="card text-center">
                     <div class="card-body">
-                        <a href="thames"><img src="https://api.corolive.nz/thames/snap.jpg" draggable="false"
-                                class="card-img-top" alt="Thames picker image"></a>
+                        <a href="thames"><img id="thames-thumbnail" src="https://api.corolive.nz/thames/snap.jpg"
+                                draggable="false" class="card-img-top" alt="Thames picker image"></a>
                         <h5 class="card-title text-center">Thames</h5>
                         <div class="center">
                             <a href="thames" class="btn btn-primary">Live</a>
@@ -72,6 +74,19 @@
             </div>
         </div>
     </div>
+
+    <script>
+    setInterval(function() {
+        var whitiangaThumbnail = document.getElementById('whitianga-thumbnail');
+        whitiangaThumbnail.src = 'https://api.corolive.nz/whitianga/snap.jpg?rand=' + Math.random();
+
+        var whangamataThumbnail = document.getElementById('whangamata-thumbnail');
+        whangamataThumbnail.src = 'https://api.corolive.nz/whangamata/snap.jpg?rand=' + Math.random();
+
+        var thamesThumbnail = document.getElementById('thames-thumbnail');
+        thamesThumbnail.src = 'https://api.corolive.nz/thames/snap.jpg?rand=' + Math.random();
+    }, 60000);
+    </script>
 
     <?php require 'footer.php';?>
 

@@ -30,7 +30,7 @@
         <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
             &copy CoroLive <script>
             document.write(new Date().getFullYear());
-            </script> <br>Created with &#10084 using <a href="https://getbootstrap.com/">Bootstrap</a>
+            </script> - Version 0.1 <br>Created with &#10084 using <a href="https://getbootstrap.com/">Bootstrap</a>
         </div>
 
     </footer>

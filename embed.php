@@ -2,11 +2,11 @@
 
 <script>
 var config = {
-    source: 'https://api.corolive.nz/<?php echo $_GET['camera']; ?>/stream.m3u8',
-    poster: 'https://api.corolive.nz/<?php echo $_GET['camera']; ?>/snap.jpg',
+    source: '//api.corolive.nz/<?php echo $_GET['camera']; ?>/stream.m3u8',
+    poster: '//api.corolive.nz/<?php echo $_GET['camera']; ?>/snap.jpg',
     parentId: '#player',
-    watermark: "https://corolive.nz/img/watermark.webp",
-    position: 'top-right',
+    watermark: "//corolive.nz/img/watermark.webp",
+    position: 'bottom-right',
     watermarkLink: 'https://corolive.nz',
     mute: true,
     autoPlay: true,

@@ -29,7 +29,7 @@
                 <div class="card text-center">
                     <div class="card-body">
                         <a href="whitianga"><img id="whitianga-thumbnail"
-                                src="https://api.corolive.nz/whitianga/snap.jpg" draggable="false" class="card-img-top"
+                                src="https://api.corolive.nz/whitianga/snap.webp" draggable="false" class="card-img-top"
                                 alt="Whitianga picker image"></a>
                         <h5 class="card-title text-center">Whitianga</h5>
                         <div class="center">
@@ -45,8 +45,8 @@
                 <div class="card text-center">
                     <div class="card-body">
                         <a href="whangamata"><img id="whangamata-thumbnail"
-                                src="https://api.corolive.nz/whangamata/snap.jpg" draggable="false" class="card-img-top"
-                                alt="Whangamata picker image"></a>
+                                src="https://api.corolive.nz/whangamata/snap.webp" draggable="false"
+                                class="card-img-top" alt="Whangamata picker image"></a>
                         <h5 class="card-title text-center">Whangamata</h5>
                         <div class="center">
                             <a href="whangamata" class="btn btn-primary">Live</a>
@@ -60,7 +60,7 @@
             <div class="col-sm-3">
                 <div class="card text-center">
                     <div class="card-body">
-                        <a href="thames"><img id="thames-thumbnail" src="https://api.corolive.nz/thames/snap.jpg"
+                        <a href="thames"><img id="thames-thumbnail" src="https://api.corolive.nz/thames/snap.webp"
                                 draggable="false" class="card-img-top" alt="Thames picker image"></a>
                         <h5 class="card-title text-center">Thames</h5>
                         <div class="center">
@@ -78,13 +78,13 @@
     <script>
     setInterval(function() {
         var whitiangaThumbnail = document.getElementById('whitianga-thumbnail');
-        whitiangaThumbnail.src = 'https://api.corolive.nz/whitianga/snap.jpg?rand=' + Math.random();
+        whitiangaThumbnail.src = 'https://api.corolive.nz/whitianga/snap.webp?rand=' + Math.random();
 
         var whangamataThumbnail = document.getElementById('whangamata-thumbnail');
-        whangamataThumbnail.src = 'https://api.corolive.nz/whangamata/snap.jpg?rand=' + Math.random();
+        whangamataThumbnail.src = 'https://api.corolive.nz/whangamata/snap.webp?rand=' + Math.random();
 
         var thamesThumbnail = document.getElementById('thames-thumbnail');
-        thamesThumbnail.src = 'https://api.corolive.nz/thames/snap.jpg?rand=' + Math.random();
+        thamesThumbnail.src = 'https://api.corolive.nz/thames/snap.webp?rand=' + Math.random();
     }, 60000);
     </script>
 

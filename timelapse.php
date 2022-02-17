@@ -1,7 +1,7 @@
 <script>
 var config = {
     source: '//api.corolive.nz/<?php echo "$camera"; ?>/animation.mp4',
-    poster: '//api.corolive.nz/<?php echo "$camera"; ?>/snap.jpg',
+    poster: '//api.corolive.nz/<?php echo "$camera"; ?>/snap.webp',
     parentId: '#player',
     watermark: "//corolive.nz/watermark.png",
     position: 'bottom-right',

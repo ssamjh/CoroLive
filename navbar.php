@@ -1,4 +1,6 @@
-<a class="navbar-brand" href="/">
+<nav class="navbar navbar-expand-sm navbar-light bg-light border-bottom">
+        <div class="container-fluid" id="navbar">
+            <a class="navbar-brand" href="/">
     <img src="img/corolive64.webp" alt="" width="32" height="32" class="d-inline-block align-text-top"> CoroLive</a>
 <span class="navbar-text">
         <i>The Coromandel's Live Webcam Network</i>
@@ -39,3 +41,5 @@
         </li>
     </ul>
 </div>
+</div>
+    </nav>

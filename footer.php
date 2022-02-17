@@ -1,4 +1,4 @@
-<br><br><br><br><br><br>
+<div id="footer"><br><br><br><br><br><br>
 
 <footer class="bg-light text-center">
 
@@ -29,3 +29,4 @@
     </div>
 
 </footer>
+</div>

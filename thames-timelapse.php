@@ -5,7 +5,7 @@
 
     <?php require 'head.php';?>
 
-    <title>Whitianga - CoroLive</title>
+    <title>Thames Timelapse - CoroLive</title>
 
     <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -19,15 +19,15 @@
 <body>
     <?php require 'navbar.php';?>
 
-    <h3 class="text-center">Whitianga Live Stream</h3>
+    <h3 class="text-center">Thames Timelapse</h3>
 
     <br>
 
-    <?php $camera = 'whitianga';?>
+    <?php $camera = 'thames';?>
 
     <?php require 'player.php';?>
 
-    <?php require 'live.php';?>
+    <?php require 'timelapse.php';?>
 
     <?php require 'footer.php';?>
 </body>

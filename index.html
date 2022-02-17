@@ -77,12 +77,17 @@
         });
     </script>
 
-    <div class="container-fluid" id="footer"></div>
+    <div id="footer"></div>
 
-    <script type="text/javascript">
-        $(function() {
-            $("#footer").load("footer.html");
-        });
+    <script>
+        async function fetchHtmlAsText(url) {
+            return await (await fetch(url)).text();
+        }
+        async function loadFooter() {
+            const contentDiv = document.getElementById("footer");
+            contentDiv.innerHTML = await fetchHtmlAsText("footer.html");
+        }
+        loadFooter();
     </script>
 
 </body>

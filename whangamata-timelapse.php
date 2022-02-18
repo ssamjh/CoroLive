@@ -7,6 +7,8 @@
 
     <title>Whangamata Timelapse - CoroLive</title>
 
+    <meta property="og:image" content="https://api.corolive.nz/whangamata/snap.webp" />
+
     <script>
     document.addEventListener("DOMContentLoaded", () => {
         $('body').on('contextmenu', 'img', function(e) {

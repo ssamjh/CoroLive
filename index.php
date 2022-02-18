@@ -7,6 +7,8 @@
 
     <title>CoroLive - The Coromandel's Live Webcam Network</title>
 
+    <meta property="og:image" content="img/corolive512.webp" />
+
     <script>
     document.addEventListener("DOMContentLoaded", () => {
         $('body').on('contextmenu', 'img', function(e) {

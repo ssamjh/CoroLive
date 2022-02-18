@@ -7,6 +7,8 @@
 
     <title>Whitianga Image Only - CoroLive</title>
 
+    <meta property="og:image" content="https://api.corolive.nz/whitianga/snap.webp" />
+
     <script>
     document.addEventListener("DOMContentLoaded", () => {
         $('body').on('contextmenu', 'img', function(e) {

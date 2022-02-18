@@ -8,7 +8,7 @@
                 <div class="col">
                     <div class="p-3 bg-light float-lg-start">
                         <h5 class="text-center fw-light">Locations sponsored by:</h5>
-                        <a href="https://cfm.co.nz/">
+                        <a href="https://cfm.co.nz/" target="_blank">
                             <img src="img/footer-cfm.webp" class="image-center" draggable="false"
                                 alt="Whitianga picker image">
                         </a>
@@ -18,7 +18,7 @@
                 <div class="col">
                     <div class="p-3 bg-light float-lg-end">
                         <h5 class="text-center fw-light">Camera hardware sponsored by:</h5>
-                        <a href="https://www.provision-isr.co.nz/">
+                        <a href="https://www.provision-isr.co.nz/" target="_blank">
                             <img src="img/footer-provision.webp" class="image-center" draggable="false"
                                 alt="Whitianga picker image">
                         </a>

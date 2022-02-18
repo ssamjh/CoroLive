@@ -3,7 +3,7 @@
 <script>
 var config = {
     source: '//api.corolive.nz/<?php echo $_GET['camera']; ?>/stream.m3u8',
-    poster: '//api.corolive.nz/<?php echo $_GET['camera']; ?>/snap.jpg',
+    poster: '//api.corolive.nz/<?php echo $_GET['camera']; ?>/snap.webp',
     parentId: '#player',
     watermark: "//corolive.nz/img/watermark.webp",
     position: 'bottom-right',

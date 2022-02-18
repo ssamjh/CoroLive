@@ -7,7 +7,7 @@
             <div class="row gx-5">
                 <div class="col">
                     <div class="p-3 bg-light float-lg-start">
-                        <h5 class="text-center fw-light">Locations sponsored by:</h5>
+                        <h5 class="text-center fw-light">Locations & network sponsored by:</h5>
                         <a href="https://cfm.co.nz/" target="_blank">
                             <img src="img/footer-cfm.webp" class="image-center" draggable="false"
                                 alt="Whitianga picker image">
@@ -30,7 +30,7 @@
         <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
             &copy CoroLive <script>
             document.write(new Date().getFullYear());
-            </script> <br>Created with &#10084 using <a href="https://getbootstrap.com/">Bootstrap</a>
+            </script><br>Created with &#10084 using <a href="https://getbootstrap.com/">Bootstrap</a>
         </div>
 
     </footer>

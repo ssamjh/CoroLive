@@ -1,4 +1,4 @@
-<script src="https://cdn.jsdelivr.net/npm/clappr@0.3.12/dist/clappr.min.js"></script>
+<script src="libs/clappr-0.3.12/clappr.min.js"></script>
 
 <div class="container-fluid">
     <div class="row justify-content-center">

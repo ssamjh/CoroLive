@@ -27,11 +27,10 @@
             </div>
         </div>
 
-        <div class="text-center p-3" style="bg-dark">
+        <div class="text-center fw-light bg-secondary">
             &copy CoroLive <script>
             document.write(new Date().getFullYear());
-            </script><br>Created with &#10084 using <a href="https://getbootstrap.com/">Bootstrap</a>
+            </script><br>Created with &#10084 using <a href="https://getbootstrap.com/">Bootstrap
         </div>
-
     </footer>
 </div>

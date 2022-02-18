@@ -87,7 +87,7 @@
 
         var thamesThumbnail = document.getElementById('thames-thumbnail');
         thamesThumbnail.src = 'https://api.corolive.nz/thames/snap.webp?rand=' + Math.random();
-    }, 60000);
+    }, 15000);
     </script>
 
     <?php require 'footer.php';?>

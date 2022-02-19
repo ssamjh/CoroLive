@@ -19,6 +19,8 @@ console.log(getMeta('description'));
 
 <script src="libs/jquery-3.6.0/jquery.min.js"></script>
 <script src="libs/bootstrap-5.1.3/js/bootstrap.bundle.min.js"></script>
-<link href="libs/bootswatch-darky-5.1.3/bootstrap.min.css" rel="stylesheet">
+
+<meta name="color-scheme" content="dark light">
+<link href="libs/bootstrap-dark-5-1.1.3/bootstrap-dark.min.css" rel="stylesheet">
 
 <link rel="icon" type="image/webp" href="img/corolive64.webp">

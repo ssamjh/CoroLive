@@ -3,7 +3,7 @@
         <a class="navbar-brand" href="/">
             <img src="img/corolive64.webp" alt="" width="32" height="32" class="d-inline-block align-text-top">
             CoroLive</a>
-        <span class="navbar-text">
+        <span class="navbar-text text-secondary">
             <i>The Coromandel's Live Webcam Network</i>
         </span>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
@@ -13,7 +13,7 @@
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle bg-info" id="navbarDropdownMenuLink" role="button"
+                    <a class="nav-link dropdown-toggle bg-info text-white" id="navbarDropdownMenuLink" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false"> Whitianga</a>
                     <ul class="dropdown-menu bg-info" aria-labelledby="navbarDropdownMenuLink">
                         <li><a class="dropdown-item" href="whitianga">Live</a></li>
@@ -25,7 +25,7 @@
                 </li>
 
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle bg-info" id="navbarDropdownMenuLink" role="button"
+                    <a class="nav-link dropdown-toggle bg-info text-white" id="navbarDropdownMenuLink" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">Whangamata</a>
                     <ul class="dropdown-menu bg-info" aria-labelledby="navbarDropdownMenuLink">
                         <li><a class="dropdown-item" href="whangamata">Live</a></li>
@@ -37,7 +37,7 @@
                 </li>
 
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle bg-info" id="navbarDropdownMenuLink" role="button"
+                    <a class="nav-link dropdown-toggle bg-info text-white" id="navbarDropdownMenuLink" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">Thames</a>
                     <ul class="dropdown-menu bg-info" aria-labelledby="navbarDropdownMenuLink">
                         <li><a class="dropdown-item" href="thames">Live</a></li>

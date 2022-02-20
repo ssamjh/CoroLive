@@ -47,6 +47,10 @@
                                 target="_blank">Archive</a></li>
                     </ul>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="embedding">Embedding</a>
+                </li>
             </ul>
         </div>
     </div>

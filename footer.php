@@ -17,6 +17,18 @@
 
                 <div class="col">
                     <div class="p-3 bg-body float-lg-end">
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="card-text">To get in contact, email <kbd>hi@corolive.nz</kbd> or click
+                                    the button below.</p>
+                                <a href="mailto:hi@corolive.nz" class="btn btn-primary">Send email</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="p-3 bg-body float-lg-end">
                         <h5 class="text-center fw-light">Camera hardware sponsored by:</h5>
                         <a href="https://www.provision-isr.co.nz/" target="_blank">
                             <img src="img/footer-provision.webp" class="image-center" draggable="false"

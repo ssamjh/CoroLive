@@ -8,14 +8,6 @@
     <title>Whitianga Timelapse - CoroLive</title>
 
     <meta property="og:image" content="https://api.corolive.nz/whitianga/snap.webp" />
-
-    <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        $('body').on('contextmenu', 'img', function(e) {
-            return false;
-        });
-    });
-    </script>
 </head>
 
 <body>

@@ -5,7 +5,7 @@
 
     <?php require 'head.php';?>
 
-    <title>CoroLive - The Coromandel's Live Webcam Network</title>
+    <title>Embedding - CoroLive</title>
 
     <meta property="og:image" content="img/corolive512.webp" />
 </head>

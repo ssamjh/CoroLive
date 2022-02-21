@@ -1,6 +1,6 @@
 <script>
 var config = {
-    source: 'https://api.corolive.nz/<?php echo "$camera"; ?>/animation.mp4',
+    source: 'https://api.corolive.nz/<?php echo "$camera"; ?>/animation.webm',
     poster: 'https://api.corolive.nz/<?php echo "$camera"; ?>/snap.webp',
     parentId: '#player',
     // watermark: "https://corolive.nz/img/watermark.webp",

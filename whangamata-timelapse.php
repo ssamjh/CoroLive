@@ -23,6 +23,10 @@
 
     <?php require 'timelapse.php';?>
 
+    <?php $startDate = '2021-03-17';?>
+
+    <?php require 'timelapse-picker.php';?>
+
     <?php require 'footer.php';?>
 </body>
 

@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="en">
 
+<?php $camera = 'whangamata';?>
+
 <head>
     <?php $pageName = "Whangamata Image Only - CoroLive";?>
 
@@ -15,8 +17,6 @@
     <h3 class="text-center">Whangamata Image Only</h3>
 
     <br>
-
-    <?php $camera = 'whangamata';?>
 
     <?php require 'imageonly.php';?>
 

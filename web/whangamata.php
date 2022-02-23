@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="en">
 
+<?php $camera = 'whangamata';?>
+
 <head>
     <?php $pageName = "Whangamata - CoroLive";?>
 
@@ -15,8 +17,6 @@
     <h3 class="text-center">Whangamata Live Stream</h3>
 
     <br>
-
-    <?php $camera = 'whangamata';?>
 
     <?php require 'player.php';?>
 

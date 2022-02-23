@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="en">
 
+<?php $camera = 'whitianga';?>
+
 <head>
     <?php $pageName = "Whitianga - CoroLive";?>
 
@@ -15,8 +17,6 @@
     <h3 class="text-center">Whitianga Live Stream</h3>
 
     <br>
-
-    <?php $camera = 'whitianga';?>
 
     <?php require 'player.php';?>
 

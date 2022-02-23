@@ -1,12 +1,16 @@
 <!doctype html>
 <html lang="en">
 
+<?php $camera = 'whangamata';?>
+
 <head>
     <?php $pageName = "Whangamata Timelapse - CoroLive";?>
 
     <?php require 'head.php';?>
 
-    <meta property="og:image" content="https://api.corolive.nz/whangamata/snap.webp" />
+    <?php require 'og-image.php';?>
+
+    <meta property="og:image" content="<?php echo "$camOgURL"; ?>" />
 </head>
 
 <body>
@@ -15,8 +19,6 @@
     <h3 class="text-center">Whangamata Timelapse</h3>
 
     <br>
-
-    <?php $camera = 'whangamata';?>
 
     <?php require 'player.php';?>
 

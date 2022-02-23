@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="en">
 
+<?php $camera = 'whitianga';?>
+
 <head>
 
     <?php $pageName = "Whitianga Image Only - CoroLive";?>
@@ -16,8 +18,6 @@
     <h3 class="text-center">Whitianga Image Only</h3>
 
     <br>
-
-    <?php $camera = 'whitianga';?>
 
     <?php require 'imageonly.php';?>
 

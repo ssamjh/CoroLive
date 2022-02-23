@@ -2,10 +2,9 @@
 <html lang="en">
 
 <head>
+    <?php $pageName = "Whangamata Image Only - CoroLive";?>
 
     <?php require 'head.php';?>
-
-    <title>Whangamata Image Only - CoroLive</title>
 
     <meta property="og:image" content="https://api.corolive.nz/whangamata/snap.webp" />
 </head>

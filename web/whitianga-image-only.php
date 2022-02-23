@@ -3,9 +3,9 @@
 
 <head>
 
-    <?php require 'head.php';?>
+    <?php $pageName = "Whitianga Image Only - CoroLive";?>
 
-    <title>Whitianga Image Only - CoroLive</title>
+    <?php require 'head.php';?>
 
     <meta property="og:image" content="https://api.corolive.nz/whitianga/snap.webp" />
 </head>

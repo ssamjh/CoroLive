@@ -2,10 +2,9 @@
 <html lang="en">
 
 <head>
+    <?php $pageName = "CoroLive - The Coromandel's Live Webcam Network";?>
 
     <?php require 'head.php';?>
-
-    <title>CoroLive - The Coromandel's Live Webcam Network</title>
 
     <meta property="og:image" content="img/corolive512.webp" />
 </head>

@@ -2,10 +2,9 @@
 <html lang="en">
 
 <head>
+    <?php $pageName = "Whitianga Timelapse - CoroLive";?>
 
     <?php require 'head.php';?>
-
-    <title>Whitianga Timelapse - CoroLive</title>
 
     <meta property="og:image" content="https://api.corolive.nz/whitianga/snap.webp" />
 </head>

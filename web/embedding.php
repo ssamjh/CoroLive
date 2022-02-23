@@ -2,10 +2,9 @@
 <html lang="en">
 
 <head>
+    <?php $pageName = "Embedding - CoroLive";?>
 
     <?php require 'head.php';?>
-
-    <title>Embedding - CoroLive</title>
 
     <meta property="og:image" content="img/corolive512.webp" />
 </head>

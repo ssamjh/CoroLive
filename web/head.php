@@ -3,19 +3,12 @@
 <meta name="HandheldFriendly" content="true">
 
 <meta property="og:url" content="https://corolive.nz<?php echo $_SERVER['REQUEST_URI']; ?>" />
-<script>
-function getMeta(metaName) {
-    const metas = document.getElementsByTagName('meta');
 
-    for (let i = 0; i < metas.length; i++) {
-        if (metas[i].getAttribute('name') === metaName) {
-            return metas[i].getAttribute('content');
-        }
-    }
-    return '';
-}
-console.log(getMeta('description'));
-</script>
+<meta property="og:title" content="<?php echo $pageName; ?>" />
+
+<title><?php echo $pageName; ?></title>
+
+<meta property="og:site_name" content="CoroLive" />
 
 <script src="libs/jquery-3.6.0/jquery.min.js"></script>
 <script src="libs/bootstrap-5.1.3/js/bootstrap.bundle.min.js"></script>

@@ -1,9 +1,10 @@
 <?php
-if (isset($_GET['date']))
-{   
+
+if (isset($_GET['date']) ) {
+
     $date = DateTime::createFromFormat('Y-m-d', $_GET['date']);
     
-    if(DateTime::createFromFormat('Y-m-d', '2022-02-28') > $date) {
+    if (DateTime::createFromFormat('Y-m-d', '2022-02-28') > $date) {
         $vidExt = 'mp4';
         $imgExt = 'jpg';
     } else {
@@ -12,11 +13,26 @@ if (isset($_GET['date']))
     }
 
     $camURL = "https://api.corolive.nz/{$camera}/archive/{$date->format('Y')}/{$date->format('M')}/{$date->format('d')}/animation.{$vidExt}";
-    $camPoster = "https://api.corolive.nz/{$camera}/archive/{$date->format('Y')}/{$date->format('M')}/{$date->format('d')}/snap-12:00.{$imgExt}";
+    $camPoster = "https://api.corolive.nz/{$camera}/archive/{$date->format('Y')}/{$date->format('M')}/{$date->format('d')}/snap-05:00.{$imgExt}";
 } else {
-    $camURL = "https://api.corolive.nz/{$camera}/animation.webm";
-    $camPoster = "https://api.corolive.nz/{$camera}/snap.webp";
+
+    $date = new DateTime("now", new DateTimeZone('Pacific/Auckland'));
+
+    $date1 = DateTime::createFromFormat('h:i a', $date->format('h:i a'));
+    $date2 = DateTime::createFromFormat('h:i a', '0:00 am');
+    $date3 = DateTime::createFromFormat('h:i a', '6:00 am');
+
+    if ($date1 > $date2 && $date1 < $date3 ) {
+        $date->modify("-1 day");
+        $camURL = "https://api.corolive.nz/{$camera}/archive/{$date->format('Y')}/{$date->format('M')}/{$date->format('d')}/animation.webm";
+        $camPoster = "https://api.corolive.nz/{$camera}/archive/{$date->format('Y')}/{$date->format('M')}/{$date->format('d')}/snap-05:00.webp";
+
+    } else {
+        $camURL = "https://api.corolive.nz/{$camera}/archive/{$date->format('Y')}/{$date->format('M')}/{$date->format('d')}/animation.webm";
+        $camPoster = "https://api.corolive.nz/{$camera}/archive/{$date->format('Y')}/{$date->format('M')}/{$date->format('d')}/snap-05:00.webp";
+    }
 }
+
 ?>
 
 <script>

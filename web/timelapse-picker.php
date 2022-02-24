@@ -5,8 +5,8 @@
             <form class="text-center">
                 <label class="text-center">
                     Or... pick another date:
-                    <input type="date" class="form-control" name="date" min="<?php echo "$startDate"; ?>" max="<?php $date = new DateTime("now", new DateTimeZone('Pacific/Auckland') );
-echo $date->format('Y-m-d');?>" value="<?php echo $_GET['date']; ?>" required>
+                    <input type="date" class="form-control" name="date" min="<?php echo "$startDate"; ?>" max="<?php $dateMax = new DateTime("now", new DateTimeZone('Pacific/Auckland') );
+echo $dateMax->format('Y-m-d');?>" value="<?php echo $date->format('Y-m-d'); ?>" required>
                     <span class="validity"></span>
                 </label>
 

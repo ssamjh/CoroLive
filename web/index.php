@@ -28,8 +28,6 @@
                         <div class="center">
                             <a href="whitianga" class="btn btn-primary">Live</a>
                             <a href="whitianga-timelapse" class="btn btn-secondary">Timelapse</a>
-                            <a href="https://api.corolive.nz/whitianga/archive/" target="_blank"
-                                class="btn btn-info">Archive</a>
                         </div>
                     </div>
                 </div>
@@ -44,8 +42,6 @@
                         <div class="center">
                             <a href="whangamata" class="btn btn-primary">Live</a>
                             <a href="whangamata-timelapse" class="btn btn-secondary">Timelapse</a>
-                            <a href="https://api.corolive.nz/whangamata/archive/" target="_blank"
-                                class="btn btn-info">Archive</a>
                         </div>
                     </div>
                 </div>
@@ -60,8 +56,6 @@
                         <div class="center">
                             <a href="thames" class="btn btn-primary">Live</a>
                             <a href="thames-timelapse" class="btn btn-secondary">Timelapse</a>
-                            <a href="https://api.corolive.nz/thames/archive/" target="_blank"
-                                class="btn btn-info">Archive</a>
                         </div>
                     </div>
                 </div>

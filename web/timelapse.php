@@ -18,11 +18,11 @@ if (isset($_GET['date']) ) {
 
     $date = new DateTime("now", new DateTimeZone('Pacific/Auckland'));
 
-    $date1 = DateTime::createFromFormat('h:i a', $date->format('h:i a'));
-    $date2 = DateTime::createFromFormat('h:i a', '0:00 am');
-    $date3 = DateTime::createFromFormat('h:i a', '6:00 am');
+    $tlDate1 = DateTime::createFromFormat('h:i a', $date->format('h:i a'));
+    $tlDate2 = DateTime::createFromFormat('h:i a', '0:00 am');
+    $tlDate3 = DateTime::createFromFormat('h:i a', '6:00 am');
 
-    if ($date1 > $date2 && $date1 < $date3 ) {
+    if ($tlDate1 > $tlDate2 && $tlDate1 < $tlDate3 ) {
         $date->modify("-1 day");
         $camURL = "https://api.corolive.nz/{$camera}/archive/{$date->format('Y')}/{$date->format('M')}/{$date->format('d')}/animation.webm";
         $camPoster = "https://api.corolive.nz/{$camera}/archive/{$date->format('Y')}/{$date->format('M')}/{$date->format('d')}/snap-05:00.webp";

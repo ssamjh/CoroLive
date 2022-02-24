@@ -1,3 +1,15 @@
+<?php
+$maxDate = new DateTime("now", new DateTimeZone('Pacific/Auckland'));
+
+$maxDate1 = DateTime::createFromFormat('h:i a', $maxDate->format('h:i a'));
+$maxDate2 = DateTime::createFromFormat('h:i a', '0:00 am');
+$maxDate3 = DateTime::createFromFormat('h:i a', '6:00 am');
+
+if ($maxDate1 > $maxDate2 && $maxDate1 < $maxDate3 ) {
+    $maxDate->modify("-1 day");
+}
+?>
+
 <br>
 <div class="container-fluid">
     <div class="row justify-content-center">
@@ -5,8 +17,9 @@
             <form class="text-center">
                 <label class="text-center">
                     Or... pick another date:
-                    <input type="date" class="form-control" name="date" min="<?php echo "$startDate"; ?>" max="<?php $dateMax = new DateTime("now", new DateTimeZone('Pacific/Auckland') );
-echo $dateMax->format('Y-m-d');?>" value="<?php echo $date->format('Y-m-d'); ?>" required>
+                    <input type="date" class="form-control" name="date" min="<?php echo "$startDate"; ?>"
+                        max="<?php echo $maxDate->format('Y-m-d');?>" value="<?php echo $date->format('Y-m-d'); ?>"
+                        required>
                     <span class="validity"></span>
                 </label>
 

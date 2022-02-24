@@ -3,7 +3,7 @@ $maxDate = new DateTime("now", new DateTimeZone('Pacific/Auckland'));
 
 $maxDate1 = DateTime::createFromFormat('h:i a', $maxDate->format('h:i a'));
 $maxDate2 = DateTime::createFromFormat('h:i a', '0:00 am');
-$maxDate3 = DateTime::createFromFormat('h:i a', '6:00 am');
+$maxDate3 = DateTime::createFromFormat('h:i a', '6:05 am');
 
 if ($maxDate1 > $maxDate2 && $maxDate1 < $maxDate3 ) {
     $maxDate->modify("-1 day");

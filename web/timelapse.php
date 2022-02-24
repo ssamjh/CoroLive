@@ -20,7 +20,7 @@ if (isset($_GET['date']) ) {
 
     $tlDate1 = DateTime::createFromFormat('h:i a', $date->format('h:i a'));
     $tlDate2 = DateTime::createFromFormat('h:i a', '0:00 am');
-    $tlDate3 = DateTime::createFromFormat('h:i a', '6:00 am');
+    $tlDate3 = DateTime::createFromFormat('h:i a', '6:05 am');
 
     if ($tlDate1 > $tlDate2 && $tlDate1 < $tlDate3 ) {
         $date->modify("-1 day");

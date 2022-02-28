@@ -4,7 +4,7 @@ if (isset($_GET['date']) ) {
 
     $date = DateTime::createFromFormat('Y-m-d', $_GET['date']);
     
-    if (DateTime::createFromFormat('Y-m-d', '2022-02-28') > $date) {
+    if (DateTime::createFromFormat('Y-m-d', '2022-03-01') > $date) {
         $vidExt = 'mp4';
         $imgExt = 'jpg';
     } else {

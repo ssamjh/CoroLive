@@ -8,4 +8,4 @@ rm /var/www/html/corolive.nz/api/$1/archive/latest
 ln -s /var/www/html/corolive.nz/api/$1/archive/$(date +%Y)/$(date +%b)/$(date +%d)/ /var/www/html/corolive.nz/api/$1/archive/latest
 #
 # Setup redirect
-echo -e "return 302 https://\x24host/$1/archive/$(date +%Y)/$(date +%b)/$(date +%d)/;" > /etc/nginx/snippets/$1-redir.conf
+#echo -e "return 302 https://\x24host/$1/archive/$(date +%Y)/$(date +%b)/$(date +%d)/;" > /etc/nginx/snippets/$1-redir.conf

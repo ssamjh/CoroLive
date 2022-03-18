@@ -1,6 +1,22 @@
+<?php
+function isMobileDevice()
+{
+    return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo
+|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
+}
+if (isMobileDevice())
+{
+    $camSrc = "https://api.corolive.nz/$camera/hls-low/live.stream.m3u8";
+}
+else
+{
+    $camSrc = "https://api.corolive.nz/$camera/stream.m3u8";
+}
+?>
+
 <script>
 var config = {
-    source: 'https://api.corolive.nz/<?php echo "$camera"; ?>/stream.m3u8',
+    source: '<?php echo "$camSrc"; ?>',
     poster: 'https://api.corolive.nz/<?php echo "$camera"; ?>/snap.webp',
     parentId: '#player',
     position: 'bottom-right',

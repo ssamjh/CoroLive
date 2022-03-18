@@ -10,7 +10,7 @@
                         <h5 class="text-center fw-light">Locations & network sponsored by:</h5>
                         <a href="https://cfm.co.nz/" target="_blank">
                             <img src="img/footer-cfm.webp" class="image-center" draggable="false"
-                                alt="Whitianga picker image">
+                                alt="CFM sponsor logo">
                         </a>
                     </div>
                 </div>
@@ -32,7 +32,7 @@
                         <h5 class="text-center fw-light">Camera hardware sponsored by:</h5>
                         <a href="https://www.provision-isr.co.nz/" target="_blank">
                             <img src="img/footer-provision.webp" class="image-center" draggable="false"
-                                alt="Whitianga picker image">
+                                alt="Provision-ISR sponsor logo">
                         </a>
                     </div>
                 </div>

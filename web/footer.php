@@ -59,3 +59,28 @@ gtag('js', new Date());
 
 gtag('config', 'UA-191965282-1');
 </script>
+
+<script>
+var $buoop = {
+    required: {
+        e: -6,
+        f: -6,
+        o: -6,
+        s: 12.2,
+        c: -6
+    },
+    unsupported: true,
+    api: 2022.03
+};
+
+function $buo_f() {
+    var e = document.createElement("script");
+    e.src = "https://browser-update.org/update.min.js";
+    document.body.appendChild(e);
+};
+try {
+    document.addEventListener("DOMContentLoaded", $buo_f, false)
+} catch (e) {
+    window.attachEvent("onload", $buo_f)
+}
+</script>

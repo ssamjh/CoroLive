@@ -70,7 +70,9 @@ var $buoop = {
         c: -6
     },
     unsupported: true,
-    api: 2022.03
+    api: 2022.03,
+    noclose: true,
+    reminder: 1
 };
 
 function $buo_f() {

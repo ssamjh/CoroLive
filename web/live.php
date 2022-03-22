@@ -3,13 +3,22 @@ function isMobileDevice()
 {
     return preg_match("/mobile/i", $_SERVER["HTTP_USER_AGENT"]);
 }
-if (isMobileDevice())
-{
+if (isMobileDevice()) {
     $camSrc = "https://api.corolive.nz/$camera/hls-low/live.stream.m3u8";
-}
-else
-{
+} else {
     $camSrc = "https://api.corolive.nz/$camera/stream.m3u8";
+}
+
+function isSafari()
+{
+    return preg_match("/iphone|ipad|ipod/i", $_SERVER["HTTP_USER_AGENT"]);
+}
+if (isSafari()) {
+    echo '<script type="text/javascript">
+
+          window.onload = function () { alert("Live streams on Safari are not supported.\n\nA fix is being worked on.\n\nTry using Image Only mode instead."); }
+
+</script>';
 }
 ?>
 

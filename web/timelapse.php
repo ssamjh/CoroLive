@@ -1,5 +1,10 @@
 <?php
 
+function isSafari()
+{
+    return preg_match("/^((?!chrome|android).)*safari/i", $_SERVER["HTTP_USER_AGENT"]);
+}
+
 if (isset($_GET['date']) ) {
 
     $date = DateTime::createFromFormat('Y-m-d', $_GET['date']);
@@ -10,6 +15,13 @@ if (isset($_GET['date']) ) {
     } else {
         $vidExt = 'webm';
         $imgExt = 'webp';
+        if (isSafari()) {
+    echo '<script type="text/javascript">
+
+          window.onload = function () { alert("Timelapse videos after 28-Feb-2022 are not supported on Safari.\n\nIf you are on MacOS try another browser.\n\nThere is no fix for iPhone or iPad until offical support is added by Apple."); }
+
+</script>';
+}
     }
 
     $camURL = "https://api.corolive.nz/{$camera}/archive/{$date->format('Y')}/{$date->format('M')}/{$date->format('d')}/animation.{$vidExt}";
@@ -32,7 +44,6 @@ if (isset($_GET['date']) ) {
         $camPoster = "https://api.corolive.nz/{$camera}/archive/{$date->format('Y')}/{$date->format('M')}/{$date->format('d')}/snap-05:00.webp";
     }
 }
-
 ?>
 
 <script>

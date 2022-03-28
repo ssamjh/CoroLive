@@ -6,7 +6,7 @@ function isMobileDevice()
 if (isMobileDevice()) {
     $camSrc = "https://api.corolive.nz/$camera/hls-low/live.stream.m3u8";
 } else {
-    $camSrc = "https://api.corolive.nz/$camera/stream.m3u8";
+    $camSrc = "https://api.corolive.nz/$camera/hls/live.stream.m3u8";
 }
 
 function isSafari()

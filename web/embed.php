@@ -9,7 +9,7 @@ if (isMobileDevice())
 }
 else
 {
-    $camSrc = "//api.corolive.nz/$_GET[camera]/stream.m3u8";
+    $camSrc = "//api.corolive.nz/$_GET[camera]/hls/live.stream.m3u8";
 }
 ?>
 

@@ -22,7 +22,7 @@ if (isset($_GET["date"])) {
         }
     }
 
-    $camURL = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/animation.{$vidExt}";
+    $camSrc = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/animation.{$vidExt}";
     $camPoster = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/snap-05:00.{$imgExt}";
     
 } else {
@@ -34,30 +34,34 @@ if (isset($_GET["date"])) {
 
     if ($tlDate1 > $tlDate2 && $tlDate1 < $tlDate3) {
         $date->modify("-1 day");
-        $camURL = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/animation.webm";
+        $camSrc = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/animation.webm";
         $camPoster = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/snap-05:00.webp";
     } else {
-        $camURL = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/animation.webm";
+        $camSrc = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/animation.webm";
         $camPoster = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/snap-05:00.webp";
     }
 }
 ?>
 
-<script type="text/javascript">
-        var media = {
-            dataProvider: {
-                source: [{
-                    url: "<?php echo "$camURL"; ?>",
-                    width: "100%",
-                    height: "100%"
-                }],
-                splashImages: [{
-                    url: "<?php echo "$camPoster"; ?>",
-                    width: "100%",
-                    height: "100%"
-                }]
-            }
-        };
-        var element = document.getElementById("player");
-        window.bigsoda.player.create(element, media);
+<script>
+var config = {
+    source: '<?php echo "$camSrc"; ?>',
+    poster: '<?php echo "$camPoster"; ?>',
+    parentId: '#player',
+    position: 'bottom-right',
+    mute: true,
+    autoPlay: true,
+    actualLiveTime: true,
+    hideVolumeBar: true,
+    width: '100%',
+    height: '100%',
+    events: {
+        onReady: function() {
+            var plugin = this.getPlugin('click_to_pause');
+            plugin && plugin.disable();
+        },
+    },
+};
+
+var player = new window.Clappr.Player(config);
 </script>

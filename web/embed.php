@@ -11,25 +11,18 @@ else
 {
     $camSrc = "//api.corolive.nz/$_GET[camera]/hls/live.stream.m3u8";
 }
+
+require 'player.php';
+
+function isSafari()
+{
+    return preg_match("/iphone|ipad|ipod/i", $_SERVER["HTTP_USER_AGENT"]);
+}
+
+
+if (isSafari()) {
+    require 'bradmax.php';
+} else {
+    require 'clapprjs.php';
+}
 ?>
-
-<?php require 'player.php';?>
-
-<script type="text/javascript">
-        var media = {
-            dataProvider: {
-                source: [{
-                    url: "<?php echo "$camSrc"; ?>",
-                    width: "100%",
-                    height: "100%"
-                }],
-                splashImages: [{
-                    url: "//api.corolive.nz/<?php echo $_GET['camera']; ?>/snap.webp",
-                    width: "100%",
-                    height: "100%"
-                }]
-            }
-        };
-        var element = document.getElementById("player");
-        window.bigsoda.player.create(element, media);
-</script>

@@ -1,5 +1,3 @@
-<script src="libs/bradmax/bradmax_player-20220604.js"></script>
-
 <script src="libs/clappr-0.3.12/clappr.min.js"></script>
 
 <div class="container-fluid">

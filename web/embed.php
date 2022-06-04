@@ -1,28 +1,33 @@
 <?php
-function isMobileDevice()
-{
-    return preg_match("/mobile/i", $_SERVER["HTTP_USER_AGENT"]);
-}
-if (isMobileDevice())
-{
-    $camSrc = "//api.corolive.nz/$_GET[camera]/hls-low/live.stream.m3u8";
-}
-else
-{
-    $camSrc = "//api.corolive.nz/$_GET[camera]/hls/live.stream.m3u8";
-}
+$camSrc = "//api.corolive.nz/hls/$_GET[camera].m3u8";
+$camPoster = "//api.corolive.nz/$_GET[camera]/snap.webp";
 
 require 'player.php';
-
-function isSafari()
-{
-    return preg_match("/iphone|ipad|ipod/i", $_SERVER["HTTP_USER_AGENT"]);
-}
-
-
-if (isSafari()) {
-    require 'bradmax.php';
-} else {
-    require 'clapprjs.php';
-}
 ?>
+
+
+<script>
+var config = {
+    source: '<?php echo "$camSrc"; ?>',
+    poster: '<?php echo "$camPoster"; ?>',
+    watermark: "//corolive.nz/img/watermark.webp",
+    position: 'bottom-right',
+    watermarkLink: 'https://corolive.nz',
+    parentId: '#player',
+    position: 'bottom-right',
+    mute: true,
+    autoPlay: true,
+    actualLiveTime: true,
+    hideVolumeBar: true,
+    width: '100%',
+    height: '100%',
+    events: {
+        onReady: function() {
+            var plugin = this.getPlugin('click_to_pause');
+            plugin && plugin.disable();
+        },
+    },
+};
+
+var player = new window.Clappr.Player(config);
+</script>

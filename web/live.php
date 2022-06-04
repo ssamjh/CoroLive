@@ -9,38 +9,18 @@ if (isMobileDevice()) {
     $camSrc = "https://api.corolive.nz/$camera/hls/live.stream.m3u8";
 }
 
+$camPoster = "https://api.corolive.nz/{$camera}/snap.webp";
+
 function isSafari()
 {
     return preg_match("/iphone|ipad|ipod/i", $_SERVER["HTTP_USER_AGENT"]);
 }
 if (isSafari()) {
-    echo '<script type="text/javascript">
-
-          window.onload = function () { alert("Live streams on Safari are not supported.\n\nA fix is being worked on.\n\nTry using Image Only mode instead."); }
-
-</script>';
+    require 'bradmax.php';
+} else {
+    require 'clapprjs.php';
 }
 ?>
 
-<script>
-var config = {
-    source: '<?php echo "$camSrc"; ?>',
-    poster: 'https://api.corolive.nz/<?php echo "$camera"; ?>/snap.webp',
-    parentId: '#player',
-    position: 'bottom-right',
-    mute: true,
-    autoPlay: true,
-    actualLiveTime: true,
-    hideVolumeBar: true,
-    width: '100%',
-    height: '100%',
-    events: {
-        onReady: function() {
-            var plugin = this.getPlugin('click_to_pause');
-            plugin && plugin.disable();
-        },
-    },
-};
 
-var player = new window.Clappr.Player(config);
-</script>
+

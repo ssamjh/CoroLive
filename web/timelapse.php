@@ -18,7 +18,7 @@ if (isset($_GET["date"])) {
         $vidExt = "webm";
         $imgExt = "webp";
         if (isSafari()) {
-            echo '<script type="text/javascript">window.onload = function () { alert("Timelapse videos after 28-Feb-2022 are not supported on Safari.\n\nIf you are on MacOS try another browser.\n\nThere is no fix for iPhone or iPad until offical support is added by Apple."); }</script>';
+            echo '<script type="text/javascript">window.onload = function () { alert("Timelapse videos after 28-Feb-2022 are not supported on Safari.\n\nIf you are on MacOS try another browser.\n\nThere is no fix until offical support is added by Apple."); }</script>';
         }
     }
 
@@ -43,25 +43,21 @@ if (isset($_GET["date"])) {
 }
 ?>
 
-
-<script>
-var config = {
-    source: '<?php echo "$camURL"; ?>',
-    poster: '<?php echo "$camPoster"; ?>',
-    parentId: '#player',
-    position: 'bottom-right',
-    mute: true,
-    autoPlay: true,
-    hideVolumeBar: true,
-    width: '100%',
-    height: '100%',
-    events: {
-        onReady: function() {
-            var plugin = this.getPlugin('click_to_pause');
-            plugin && plugin.disable();
-        },
-    },
-};
-
-var player = new window.Clappr.Player(config);
+<script type="text/javascript">
+        var media = {
+            dataProvider: {
+                source: [{
+                    url: "<?php echo "$camURL"; ?>",
+                    width: "100%",
+                    height: "100%"
+                }],
+                splashImages: [{
+                    url: "<?php echo "$camPoster"; ?>",
+                    width: "100%",
+                    height: "100%"
+                }]
+            }
+        };
+        var element = document.getElementById("player");
+        window.bigsoda.player.create(element, media);
 </script>

@@ -4,12 +4,11 @@
 <?php $camera = 'whitianga';?>
 
 <head>
-
     <?php $pageName = "Whitianga Image Only - CoroLive";?>
 
     <?php require 'head.php';?>
 
-    <meta property="og:image" content="https://api.corolive.nz/whitianga/snap.webp" />
+    <meta property="og:image" content="https://api.corolive.nz/<?php echo "$camera"; ?>/snap.webp" />
 </head>
 
 <body>

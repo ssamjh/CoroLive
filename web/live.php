@@ -1,6 +1,6 @@
 <?php
 $camSrc = "https://api.corolive.nz/hls/$camera.m3u8";
-$camPoster = "https://api.corolive.nz/{$camera}/snap.webp";
+$camPoster = "https://api.corolive.nz/$camera/snap.webp";
 ?>
 
 <script>

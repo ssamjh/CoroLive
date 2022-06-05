@@ -8,7 +8,7 @@
 
     <?php require 'head.php';?>
 
-    <meta property="og:image" content="https://api.corolive.nz/thames/snap.webp" />
+    <meta property="og:image" content="https://api.corolive.nz/<?php echo "$camSrc"; ?>/snap.webp" />
 </head>
 
 <body>

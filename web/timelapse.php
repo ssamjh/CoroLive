@@ -18,7 +18,7 @@ if (isset($_GET["date"])) {
         $vidExt = "webm";
         $imgExt = "webp";
         if (isSafari()) {
-            echo '<script type="text/javascript">window.onload = function () { alert("Timelapse videos after 28-Feb-2022 are not supported on Safari.\n\nIf you are on MacOS try another browser.\n\nThere is no fix until offical support is added by Apple."); }</script>';
+            echo '<script type="text/javascript">window.onload = function () { alert("Timelapse videos after 28-Feb-2022 are not supported on Safari.\n\nIf you are on macOS try another browser.\n\nThere is no fix until offical support is added by Apple."); }</script>';
         }
     }
 

@@ -7,9 +7,7 @@ CAM=$1
 CAMERA=$2
 
 mkdir -p /tmp/$CAM-monthlapse/$YEAR-$MON
-
 cd /tmp/$CAM-monthlapse/$YEAR-$MON
-
 touch /tmp/$CAM-monthlapse/$YEAR-$MON/files.txt
 
 DAY=1
@@ -31,9 +29,11 @@ echo "Merge complete. Re-rendering merged file at higher speed."
 
 echo "Re-render complete. Uploading finished timelapse of $CAMERA to Facebook page."
 
+ACCESSTOKEN=`cat /opt/corolive-2/accesstoken.txt`
+
 curl -X POST \
   "https://graph-video.facebook.com/305641893452131/videos" \
-  -F "access_token=***REMOVED***" \
+  -F "access_token=$ACCESSTOKEN" \
   -F "source=@/tmp/$CAM-monthlapse/$YEAR-$MON/timelapse-$YEAR-$MON.webm" \
   -F "description=$CAMERA Monthlapse: $MONTH $YEAR"
   

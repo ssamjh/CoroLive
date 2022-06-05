@@ -5,7 +5,6 @@ rm -rf /tmp/$1-animation
 mkdir -p /tmp/$1-animation/webp
 #
 # Copy all images from today to our temporary folder.
-#
 cp /var/www/html/corolive.nz/api/$1/archive/latest/*.webp /tmp/$1-animation/webp/
 #
 # Move to the jpg folder.

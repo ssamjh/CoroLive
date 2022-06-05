@@ -5,12 +5,11 @@ MONTH=`date --date="2 days ago" "+%B"`
 YEAR=`date --date="2 days ago" "+%Y"`
 CAM=$1
 CAMERA=$2
+DAY=1
 
 mkdir -p /tmp/$CAM-monthlapse/$YEAR-$MON
 cd /tmp/$CAM-monthlapse/$YEAR-$MON
 touch /tmp/$CAM-monthlapse/$YEAR-$MON/files.txt
-
-DAY=1
 
 while [[ $DAY -le 31 ]]
 do

@@ -16,6 +16,6 @@ $camStill = "https://api.corolive.nz/$camera/snap.webp";
 <script>
 setInterval(function() {
     var myImageElement = document.getElementById('image-only');
-    myImageElement.src = '<?php echo "$camStill"; ?>' + Math.random();
+    myImageElement.src = '<?php echo "$camStill"; ?>?=' + Math.random();
 }, 15000);
 </script>

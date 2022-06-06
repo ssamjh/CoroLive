@@ -1,12 +1,7 @@
-<?php
-$camSrc = "https://api.corolive.nz/hls/$camera.m3u8";
-$camPoster = "https://api.corolive.nz/$camera/snap.webp";
-?>
-
 <script>
 var config = {
-    source: '<?php echo "$camSrc"; ?>',
-    poster: '<?php echo "$camPoster"; ?>',
+    source: 'https://api.corolive.nz/hls/<?php echo "$camera"; ?>.m3u8', 
+    poster: 'https://api.corolive.nz/<?php echo "$camera"; ?>/snap.webp',
     parentId: '#player',
     position: 'bottom-right',
     mute: true,

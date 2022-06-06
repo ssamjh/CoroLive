@@ -22,6 +22,8 @@
 
     <?php require 'live.php';?>
 
+    <?php require 'live-picker.php';?>
+
     <?php require 'footer.php';?>
 </body>
 

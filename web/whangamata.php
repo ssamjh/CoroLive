@@ -26,6 +26,8 @@ This camera is currently faulty and will be fixed ASAP!
 
     <?php require 'live.php';?>
 
+    <?php require 'live-picker.php';?>
+
     <?php require 'footer.php';?>
 </body>
 

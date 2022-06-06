@@ -40,14 +40,16 @@
             }
             return "";
         }
+
         window.addEventListener('DOMContentLoaded', (event) => {
-            // Hide the stop button
+            // Set varible
             var qualityCookie = cookieGet('quality');
             // Check if quality cookie exists
             if (qualityCookie != "") {
                 // If it does, get and update page to the quality from last time
                 qualityUpdate(qualityCookie);
                 document.getElementById("select-quality").value = (qualityCookie);
+
             } else {
                 // Otherwise if cookie doesn't exist, set to default
                 document.getElementById("select-quality").value = "auto";

@@ -16,10 +16,6 @@
 
     <h3 class="text-center">Whangamata Image Only</h3>
 
-    <div class="alert alert-danger text-center" role="alert">
-This camera is currently faulty and will be fixed ASAP!
-    </div>
-
     <br>
 
     <?php require 'imageonly.php';?>

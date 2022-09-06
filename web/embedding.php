@@ -2,15 +2,15 @@
 <html lang="en">
 
 <head>
-    <?php $pageName = "Embedding - CoroLive";?>
+    <?php $pageName = "Embedding - CoroLive"; ?>
 
-    <?php require 'head.php';?>
+    <?php require 'head.php'; ?>
 
     <meta property="og:image" content="img/corolive512.webp" />
 </head>
 
 <body>
-    <?php require 'navbar.php';?>
+    <?php require 'navbar.php'; ?>
 
     <h2 class="text-center">Embedding</h2>
 
@@ -33,8 +33,7 @@
             <kbd>whangamata</kbd>, or <kbd>thames</kbd>.</a>
         <br>
         <br>
-        <div class="fw-lighter">You can learn more about the HTML iframe by <a class="fw-lighter"
-                href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe">clicking here</a>.</div>
+        <div class="fw-lighter">You can learn more about the HTML iframe by <a class="fw-lighter" href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe">clicking here</a>.</div>
         <br>
         <br>
         <h5>Lastly, and most importantly...</h5>
@@ -42,7 +41,7 @@
             your website. See below for contact details.</a>
     </div>
 
-    <?php require 'footer.php';?>
+    <?php require 'footer.php'; ?>
 
 </body>
 

@@ -24,7 +24,6 @@ if (isset($_GET["date"])) {
 
     $camSrc = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/animation.{$vidExt}";
     $camPoster = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/snap-05:00.{$imgExt}";
-    
 } else {
     $date = new DateTime("now", new DateTimeZone("Pacific/Auckland"));
 
@@ -44,24 +43,24 @@ if (isset($_GET["date"])) {
 ?>
 
 <script>
-var config = {
-    source: '<?php echo "$camSrc"; ?>',
-    poster: '<?php echo "$camPoster"; ?>',
-    parentId: '#player',
-    position: 'bottom-right',
-    mute: true,
-    autoPlay: true,
-    actualLiveTime: true,
-    hideVolumeBar: true,
-    width: '100%',
-    height: '100%',
-    events: {
-        onReady: function() {
-            var plugin = this.getPlugin('click_to_pause');
-            plugin && plugin.disable();
+    var config = {
+        source: '<?php echo "$camSrc"; ?>',
+        poster: '<?php echo "$camPoster"; ?>',
+        parentId: '#player',
+        position: 'bottom-right',
+        mute: true,
+        autoPlay: true,
+        actualLiveTime: true,
+        hideVolumeBar: true,
+        width: '100%',
+        height: '100%',
+        events: {
+            onReady: function() {
+                var plugin = this.getPlugin('click_to_pause');
+                plugin && plugin.disable();
+            },
         },
-    },
-};
+    };
 
-var player = new window.Clappr.Player(config);
+    var player = new window.Clappr.Player(config);
 </script>

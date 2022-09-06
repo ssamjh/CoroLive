@@ -14,30 +14,30 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle bg-info text-white" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false"> Whitianga</a>
                     <ul class="dropdown-menu bg-info" aria-labelledby="navbarDropdownMenuLink">
-                        <li><a class="dropdown-item" href="whitianga">Live</a></li>
-                        <li><a class="dropdown-item" href="whitianga-timelapse">Timelapse</a></li>
-                        <li><a class="dropdown-item" href="whitianga-image-only">Image Only</a></li>
-                        <li><a class="dropdown-item" href="https://api.corolive.nz/whitianga/archive/" target="_blank">Archive</a></li>
+                        <li><a class="dropdown-item text-white" href="whitianga">Live</a></li>
+                        <li><a class="dropdown-item text-white" href="whitianga-timelapse">Timelapse</a></li>
+                        <li><a class="dropdown-item text-white" href="whitianga-image-only">Image Only</a></li>
+                        <li><a class="dropdown-item text-white" href="https://api.corolive.nz/whitianga/archive/" target="_blank">Archive</a></li>
                     </ul>
                 </li>
 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle bg-info text-white" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">Whangamata</a>
                     <ul class="dropdown-menu bg-info" aria-labelledby="navbarDropdownMenuLink">
-                        <li><a class="dropdown-item" href="whangamata">Live</a></li>
-                        <li><a class="dropdown-item" href="whangamata-timelapse">Timelapse</a></li>
-                        <li><a class="dropdown-item" href="whangamata-image-only">Image Only</a></li>
-                        <li><a class="dropdown-item" href="https://api.corolive.nz/whangamata/archive/" target="_blank">Archive</a></li>
+                        <li><a class="dropdown-item text-white" href="whangamata">Live</a></li>
+                        <li><a class="dropdown-item text-white" href="whangamata-timelapse">Timelapse</a></li>
+                        <li><a class="dropdown-item text-white" href="whangamata-image-only">Image Only</a></li>
+                        <li><a class="dropdown-item text-white" href="https://api.corolive.nz/whangamata/archive/" target="_blank">Archive</a></li>
                     </ul>
                 </li>
 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle bg-info text-white" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">Thames</a>
                     <ul class="dropdown-menu bg-info" aria-labelledby="navbarDropdownMenuLink">
-                        <li><a class="dropdown-item" href="thames">Live</a></li>
-                        <li><a class="dropdown-item" href="thames-timelapse">Timelapse</a></li>
-                        <li><a class="dropdown-item" href="thames-image-only">Image Only</a></li>
-                        <li><a class="dropdown-item" href="https://api.corolive.nz/thames/archive/" target="_blank">Archive</a></li>
+                        <li><a class="dropdown-item text-white" href="thames">Live</a></li>
+                        <li><a class="dropdown-item text-white" href="thames-timelapse">Timelapse</a></li>
+                        <li><a class="dropdown-item text-white" href="thames-image-only">Image Only</a></li>
+                        <li><a class="dropdown-item text-white" href="https://api.corolive.nz/thames/archive/" target="_blank">Archive</a></li>
                     </ul>
                 </li>
 

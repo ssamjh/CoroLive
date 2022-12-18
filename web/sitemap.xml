@@ -47,6 +47,9 @@
     <loc>https://corolive.nz/embedding</loc>
     <priority>0.05</priority>
   </url>
-
+  <url>
+    <loc>https://corolive.nz/embed</loc>
+    <priority>0</priority>
+  </url>
 
 </urlset>

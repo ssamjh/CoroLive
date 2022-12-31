@@ -1,7 +1,7 @@
 <script>
     var config = {
         source: 'https://api.corolive.nz/hls/<?php echo "$camera"; ?>.m3u8',
-        poster: 'https://api.corolive.nz/<?php echo "$camera"; ?>/snap.webp',
+        poster: 'https://api.corolive.nz/<?php echo "$camera"; ?>/snap.webp?rand=<?php echo (rand()); ?>',
         parentId: '#player',
         position: 'bottom-right',
         mute: true,

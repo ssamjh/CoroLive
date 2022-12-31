@@ -1,6 +1,6 @@
 <?php
 $camSrc = "https://api.corolive.nz/hls/$_GET[camera].m3u8";
-$camPoster = "https://api.corolive.nz/$_GET[camera]/snap.webp";
+$camPoster = "https://api.corolive.nz/$_GET[camera]/snap.webp?rand=" . rand();
 
 require 'player.php';
 ?>

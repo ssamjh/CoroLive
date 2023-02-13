@@ -58,4 +58,4 @@ cp "$output_file_fast" "$today_folder_path/animation-fast.webm"
 cp "$output_file_fast" "$api_folder/$camera/animation-fast.webm"
 
 # Remove the animation folder.
-rm -rf "$tmp_folder/"
+rm -rf "$tmp_folder"

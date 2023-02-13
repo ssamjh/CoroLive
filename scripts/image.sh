@@ -7,8 +7,10 @@ url=$3
 
 if [ "$mode" == "snap" ]; then
     
-    # Try to fetch image.
+    # Set i to 0.
     i=0
+
+    # Loop 4 times to attempt to mitigate short connection drops.
     while ((i < 4)); do
         curl --connect-timeout 2 --retry 4 --retry-delay 1 -s -S -f -o /tmp/$camera-snap.jpg $url \
         && cwebp /tmp/$camera-snap.jpg -quiet -preset photo -resize 1920 1080 -o /tmp/$camera-snap.webp \

@@ -7,7 +7,7 @@ camera=$1
 today_folder_path="/var/www/html/corolive.nz/api/$camera/archive/$(date +%Y/%b/%d)"
 
 # Create the tmp folder varible.
-tmp_folder="/tmp/animation-$camera"
+tmp_folder="/run/animation-$camera"
 
 # Set the output file name and format.
 output_file="$tmp_folder/animation.webm"

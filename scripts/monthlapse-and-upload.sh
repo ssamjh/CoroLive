@@ -13,9 +13,9 @@ touch /tmp/$CAM-monthlapse/$YEAR-$MON/files.txt
 
 while [[ $DAY -le 31 ]]
 do
- echo "Downloading $DAY $MON $YEAR from $CAMERA's archives."
- curl --connect-timeout 2 --retry 4 --retry-delay 1 -s -S -f -o "$DAY.webm" https://api.corolive.nz/$CAM/archive/$YEAR/$MON/"$(printf %02d $DAY)"/animation-fast.webm && echo "file '$DAY'.webm" >> /tmp/$CAM-monthlapse/$YEAR-$MON/files.txt
- (( DAY++ ))
+    echo "Downloading $DAY $MON $YEAR from $CAMERA's archives."
+    curl --connect-timeout 2 --retry 4 --retry-delay 1 -s -S -f -o "$DAY.webm" https://api.corolive.nz/$CAM/archive/$YEAR/$MON/"$(printf %02d $DAY)"/animation-fast.webm && echo "file '$DAY'.webm" >> /tmp/$CAM-monthlapse/$YEAR-$MON/files.txt
+    (( DAY++ ))
 done
 
 echo "Archive downloading complete. Starting merge of all days into one big file."
@@ -31,11 +31,11 @@ echo "Re-render complete. Uploading finished timelapse of $CAMERA to Facebook pa
 ACCESSTOKEN=`cat /opt/corolive-2/accesstoken.txt`
 
 curl -X POST \
-  "https://graph-video.facebook.com/305641893452131/videos" \
-  -F "access_token=$ACCESSTOKEN" \
-  -F "source=@/tmp/$CAM-monthlapse/$YEAR-$MON/timelapse-$YEAR-$MON.webm" \
-  -F "description=$CAMERA Monthlapse: $MONTH $YEAR"
-  
+"https://graph-video.facebook.com/305641893452131/videos" \
+-F "access_token=$ACCESSTOKEN" \
+-F "source=@/tmp/$CAM-monthlapse/$YEAR-$MON/timelapse-$YEAR-$MON.webm" \
+-F "description=$CAMERA Monthlapse: $MONTH $YEAR"
+
 echo "Facebook upload complete. Now copying timelapse to correct location and cleaning up working folder."
 
 cp "/tmp/$CAM-monthlapse/$YEAR-$MON/timelapse-$YEAR-$MON.webm" "/var/www/html/corolive.nz/api/$CAM/archive/$YEAR/$MON/monthlapse.webm"

@@ -26,7 +26,7 @@ fi
 mkdir -p "$tmp_folder"
 
 # Copy today's images to the temporary folder.
-cp "$today_folder_path/*.webp" "$tmp_folder/"
+find "$today_folder_path" -name "*.webp" -exec cp {} "$tmp_folder/" \;
 
 # Move to the webp folder.
 cd "$tmp_folder/"

@@ -9,8 +9,8 @@ if [ "$mode" == "snap" ]; then
     
     # Set i to 0.
     i=0
-
-    # Loop 4 times to attempt to mitigate short connection drops.
+    
+    # Loop 4 times to attempt to update every 15s.
     while ((i < 4)); do
         curl --connect-timeout 2 --retry 4 --retry-delay 1 -s -S -f -o /tmp/$camera-snap.jpg $url \
         && cwebp /tmp/$camera-snap.jpg -quiet -preset photo -resize 1920 1080 -o /tmp/$camera-snap.webp \
@@ -29,8 +29,8 @@ if [ "$mode" == "snap" ]; then
     today_folder_path="/var/www/html/corolive.nz/api/$camera/archive/$(date +%Y/%b/%d)"
     
     #Create the folder if it doesn't exist.
-    if [ ! -d "$folder_path" ]; then
-        mkdir -p "$folder_path"
+    if [ ! -d "$today_folder_path" ]; then
+        mkdir -p "$today_folder_path"
     fi
     
     #Grab a still from camera.

@@ -15,12 +15,14 @@ if [ "$mode" == "snap" ]; then
         curl --connect-timeout 2 --retry 4 --retry-delay 1 -s -S -f -o /tmp/$camera-snap.jpg $url \
         && cwebp /tmp/$camera-snap.jpg -quiet -preset photo -resize 1920 1080 -o /tmp/$camera-snap.webp \
         && mv /tmp/$camera-snap.webp "/var/www/html/corolive.nz/api/$camera/snap.webp"
+        
+        # Remove tmp file.
+        rm "/tmp/$camera-snap.jpg"
+
+        # Wait 15 seconds.
         sleep 15
         ((i++));
     done
-    
-    # Remove tmp image.
-    rm "/tmp/$camera-snap.jpg"
     
     
     elif [ "$mode" == "api" ]; then

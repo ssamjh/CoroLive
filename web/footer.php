@@ -1,3 +1,5 @@
+<?php require 'local-security.php'; ?>
+
 <br><br><br>
 
 <div class="navbar-static-bottom">

@@ -1,3 +1,5 @@
+<?php require 'local-security.php'; ?>
+
 <?php
 
 if (isset($_GET["date"])) {
@@ -31,25 +33,85 @@ if (isset($_GET["date"])) {
 }
 ?>
 
-<script>
-    var config = {
-        source: '<?php echo "$camSrc"; ?>',
-        poster: '<?php echo "$camPoster"; ?>',
-        parentId: '#player',
-        position: 'bottom-right',
-        mute: true,
-        autoPlay: true,
-        actualLiveTime: true,
-        hideVolumeBar: true,
-        width: '100%',
-        height: '100%',
-        events: {
-            onReady: function () {
-                var plugin = this.getPlugin('click_to_pause');
-                plugin && plugin.disable();
-            },
-        },
-    };
+<head>
+    <?php $cameraCapitalized = ucfirst($camera); ?>
+    <?php $pageName = "$cameraCapitalized Timelapse - CoroLive"; ?>
 
-    var player = new window.Clappr.Player(config);
-</script>
+    <?php require 'head.php'; ?>
+
+    <?php require 'og-image.php'; ?>
+
+    <meta property="og:image" content="<?php echo "$camOgURL"; ?>" />
+</head>
+
+<body>
+    <?php require 'navbar.php'; ?>
+
+    <h3 class="text-center">
+        <?php echo "$cameraCapitalized"; ?> Timelapse
+    </h3>
+
+    <br>
+
+    <?php require 'player.php'; ?>
+
+    <script>
+        var config = {
+            source: '<?php echo "$camSrc"; ?>',
+            poster: '<?php echo "$camPoster"; ?>',
+            parentId: '#player',
+            position: 'bottom-right',
+            mute: true,
+            autoPlay: true,
+            actualLiveTime: true,
+            hideVolumeBar: true,
+            width: '100%',
+            height: '100%',
+            events: {
+                onReady: function () {
+                    var plugin = this.getPlugin('click_to_pause');
+                    plugin && plugin.disable();
+                },
+            },
+        };
+
+        var player = new window.Clappr.Player(config);
+    </script>
+
+    <?php
+    $maxDate = new DateTime("now", new DateTimeZone('Pacific/Auckland'));
+
+    $maxDate1 = DateTime::createFromFormat('h:i a', $maxDate->format('h:i a'));
+    $maxDate2 = DateTime::createFromFormat('h:i a', '0:00 am');
+    $maxDate3 = DateTime::createFromFormat('h:i a', '6:05 am');
+
+    if ($maxDate1 > $maxDate2 && $maxDate1 < $maxDate3) {
+        $maxDate->modify("-1 day");
+    }
+    ?>
+
+    <br>
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-xxl-8">
+                <form class="text-center">
+                    <label class="text-center">
+                        Or... pick another date:
+                        <input type="date" class="form-control" name="date" min="<?php echo "$startDate"; ?>"
+                            max="<?php echo $maxDate->format('Y-m-d'); ?>" value="<?php echo $date->format('Y-m-d'); ?>"
+                            required>
+                        <span class="validity"></span>
+                    </label>
+
+                    <p>
+                        <button class="btn btn-secondary text-center">Submit</button>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <?php require 'footer.php'; ?>
+</body>
+
+</html>

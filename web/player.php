@@ -1,3 +1,5 @@
+<?php require 'local-security.php'; ?>
+
 <script src="libs/clappr-0.3.12/clappr.min.js"></script>
 
 <div class="container-fluid">

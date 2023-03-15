@@ -1,3 +1,5 @@
+<?php require 'local-security.php'; ?>
+
 <?php
 if (isset($_GET['date'])) {
     $dateOgCurrent = DateTime::createFromFormat('Y-m-d', $_GET['date']);

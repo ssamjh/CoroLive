@@ -1,3 +1,5 @@
+<?php require 'local-security.php'; ?>
+
 <nav class="navbar navbar-expand-sm navbar-dark bg-info border-bottom">
     <div class="container-fluid" id="navbar">
         <a class="navbar-brand" href="/">

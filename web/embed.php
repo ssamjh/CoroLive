@@ -22,7 +22,7 @@ require 'player.php';
         width: '100%',
         height: '100%',
         events: {
-            onReady: function() {
+            onReady: function () {
                 var plugin = this.getPlugin('click_to_pause');
                 plugin && plugin.disable();
             },

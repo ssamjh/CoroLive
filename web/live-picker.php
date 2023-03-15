@@ -5,7 +5,8 @@
             <form class="text-center">
                 <label class="text-center">
                     Stream quality:
-                    <select name="select-quality" class="form-control" id="select-quality" onchange="qualityUpdate(this.value);cookieSet('quality', this.value, 365);">
+                    <select name="select-quality" class="form-control" id="select-quality"
+                        onchange="qualityUpdate(this.value);cookieSet('quality', this.value, 365);">
                         <option value="auto">Auto</option>
                         <option value="high">High</option>
                         <option value="low">Low</option>

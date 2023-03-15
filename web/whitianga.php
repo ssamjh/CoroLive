@@ -8,7 +8,8 @@
 
     <?php require 'head.php'; ?>
 
-    <meta property="og:image" content="https://api.corolive.nz/<?php echo "$camera"; ?>/snap.webp?rand=<?php echo (rand()); ?>" />
+    <meta property="og:image"
+        content="https://api.corolive.nz/<?php echo "$camera"; ?>/snap.webp?rand=<?php echo (rand()); ?>" />
 </head>
 
 <body>

@@ -6,11 +6,14 @@
 
 <meta property="og:title" content="<?php echo $pageName; ?>" />
 
-<title><?php echo $pageName; ?></title>
+<title>
+    <?php echo $pageName; ?>
+</title>
 
 <meta property="og:site_name" content="CoroLive" />
 
-<meta property="og:description" content="CoroLive is the Coromandel's live webcam network, with cameras in Whitianga, Whangamata and Thames plus extensive archives." />
+<meta property="og:description"
+    content="CoroLive is the Coromandel's live webcam network, with cameras in Whitianga, Whangamata and Thames plus extensive archives." />
 
 <script src="libs/jquery-3.6.0/jquery.min.js"></script>
 <script src="libs/bootstrap-5.1.3/js/bootstrap.bundle.min.js"></script>

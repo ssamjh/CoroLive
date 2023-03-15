@@ -17,7 +17,9 @@ if ($maxDate1 > $maxDate2 && $maxDate1 < $maxDate3) {
             <form class="text-center">
                 <label class="text-center">
                     Or... pick another date:
-                    <input type="date" class="form-control" name="date" min="<?php echo "$startDate"; ?>" max="<?php echo $maxDate->format('Y-m-d'); ?>" value="<?php echo $date->format('Y-m-d'); ?>" required>
+                    <input type="date" class="form-control" name="date" min="<?php echo "$startDate"; ?>"
+                        max="<?php echo $maxDate->format('Y-m-d'); ?>" value="<?php echo $date->format('Y-m-d'); ?>"
+                        required>
                     <span class="validity"></span>
                 </label>
 

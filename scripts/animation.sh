@@ -29,7 +29,7 @@ fi
 mkdir -p "$tmp_folder"
 
 # Get the number of minutes since the previous top of hour.
-minutes_since_top_of_hour=$(($(date +%-M) + 60 - 1))
+minutes_since_top_of_hour=$((59 - $(date +%-M)))
 
 # Copy today's images to the temporary folder using find and the -mmin option.
 find "$today_folder_path" -name "*.webp" -mmin +$minutes_since_top_of_hour -exec cp {} "$tmp_folder/" \;

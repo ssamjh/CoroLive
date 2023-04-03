@@ -28,11 +28,14 @@ fi
 # Create a new folder for the animation.
 mkdir -p "$tmp_folder"
 
-# Get the number of minutes since the previous top of hour.
-minutes_since_top_of_hour=$((59 - $(date +%-M)))
+# Calculate the number of minutes since the last top of the hour.
+minutes_since_last_top_of_hour=$(date +%-M)
 
-# Copy today's images to the temporary folder using find and the -mmin option.
-find "$today_folder_path" -name "*.webp" -mmin +$minutes_since_top_of_hour -exec cp {} "$tmp_folder/" \;
+# Calculate the timestamp for the last top of the hour.
+last_top_of_hour_timestamp=$(date -d "-$minutes_since_last_top_of_hour minutes" '+%Y-%m-%d %H:%M')
+
+# Copy today's images to the temporary folder using find and the -newermt option.
+find "$today_folder_path" -name "*.webp" ! -newermt "$last_top_of_hour_timestamp" -exec cp {} "$tmp_folder/" \;
 
 # Move to the webp folder.
 cd "$tmp_folder/"

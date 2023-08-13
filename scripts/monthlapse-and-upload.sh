@@ -38,6 +38,6 @@ curl -X POST \
 
 echo "Facebook upload complete. Now copying timelapse to correct location and cleaning up working folder."
 
-cp "/tmp/$CAM-monthlapse/$YEAR-$MON/timelapse-$YEAR-$MON.webm" "/var/www/html/corolive.nz/api/$CAM/archive/$YEAR/$MON/monthlapse.webm"
+cp "/tmp/$CAM-monthlapse/$YEAR-$MON/timelapse-$YEAR-$MON.webm" "/var/www/corolive.nz/api/$CAM/archive/$YEAR/$MON/monthlapse.webm"
 
 rm -rf /tmp/$CAM-monthlapse/$YEAR-$MON

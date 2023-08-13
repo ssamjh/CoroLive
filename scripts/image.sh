@@ -14,7 +14,7 @@ if [ "$mode" == "snap" ]; then
     while ((i < 4)); do
         curl --connect-timeout 2 --retry 4 --retry-delay 1 -s -S -f -o /run/$camera-snap.jpg $url \
         && cwebp /run/$camera-snap.jpg -quiet -preset photo -resize 1920 1080 -o /run/$camera-snap.webp \
-        && mv /run/$camera-snap.webp "/var/www/html/corolive.nz/api/$camera/snap.webp"
+        && mv /run/$camera-snap.webp "/var/www/corolive.nz/api/$camera/snap.webp"
         
         # Remove tmp file.
         rm "/run/$camera-snap.jpg"
@@ -30,7 +30,7 @@ if [ "$mode" == "snap" ]; then
     elif [ "$mode" == "api" ]; then
     
     # Create varible.
-    today_folder_path="/var/www/html/corolive.nz/api/$camera/archive/$(date +%Y/%b/%d)"
+    today_folder_path="/var/www/corolive.nz/api/$camera/archive/$(date +%Y/%b/%d)"
     
     #Create the folder if it doesn't exist.
     if [ ! -d "$today_folder_path" ]; then

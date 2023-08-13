@@ -4,7 +4,7 @@
 camera=$1
 
 # Get the folder path for today's images.
-today_folder_path="/var/www/html/corolive.nz/api/$camera/archive/$(date +%Y/%b/%d)"
+today_folder_path="/var/www/corolive.nz/api/$camera/archive/$(date +%Y/%b/%d)"
 
 # Create the tmp folder varible.
 tmp_folder="/run/animation-$camera"
@@ -16,7 +16,7 @@ output_file="$tmp_folder/animation.webm"
 output_file_fast="$tmp_folder/animation-fast.webm"
 
 # Set the api folder path.
-api_folder="/var/www/html/corolive.nz/api"
+api_folder="/var/www/corolive.nz/api"
 
 
 

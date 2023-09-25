@@ -57,7 +57,7 @@ if ($direct_call) {
             </div>
         </div>
 
-        <div class="text-center fw-light bg-dark text-white">
+        <div class="text-center fw-light">
             &copy CoroLive
             <script>
                 document.write(new Date().getFullYear());

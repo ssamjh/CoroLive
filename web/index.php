@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-bs-theme="auto">
 
 <head>
     <?php $pageName = "CoroLive - The Coromandel's Live Webcam Network"; ?>

@@ -33,10 +33,12 @@ if ($direct_call) {
 <meta property="og:description"
     content="CoroLive is the Coromandel's live webcam network, with cameras in Whitianga, Whangamata and Thames plus extensive archives." />
 
-<script src="libs/jquery-3.6.0/jquery.min.js"></script>
-<script src="libs/bootstrap-5.1.3/js/bootstrap.bundle.min.js"></script>
+<script src=" https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.j "></script>
 
-<meta name="color-scheme" content="dark light">
-<link href="libs/bootstrap-dark-5-1.1.3/bootstrap-dark.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="libs/bootstrap-auto-colour.js"></script>
 
 <link rel="icon" type="image/webp" href="img/corolive64.webp">

@@ -1,15 +1,14 @@
 #!/bin/sh
-if [ -z "$3" ]; then
+if [ -z "$2" ]; then
     DATE_ARG="2 days ago"
 else
-    DATE_ARG="$3"
+    DATE_ARG="$2"
 fi
 
 MON=`date --date="$DATE_ARG" "+%b"`
 MONTH=`date --date="$DATE_ARG" "+%B"`
 YEAR=`date --date="$DATE_ARG" "+%Y"`
 CAM=$1
-CAMERA=$2
 DAY=1
 
 mkdir -p /tmp/$CAM-monthlapse/$YEAR-$MON
@@ -18,7 +17,7 @@ touch /tmp/$CAM-monthlapse/$YEAR-$MON/files.txt
 
 while [[ $DAY -le 31 ]]
 do
-    echo "Downloading $DAY $MON $YEAR from $CAMERA's archives."
+    echo "Downloading $DAY $MON $YEAR from $CAM's archives."
     curl --connect-timeout 2 --retry 4 --retry-delay 1 -s -S -f -o "$DAY.webm" https://api.corolive.nz/$CAM/archive/$YEAR/$MON/"$(printf %02d $DAY)"/animation.webm && echo "file '$DAY'.webm" >> /tmp/$CAM-monthlapse/$YEAR-$MON/files.txt
     (( DAY++ ))
 done

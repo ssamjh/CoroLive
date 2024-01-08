@@ -1,8 +1,13 @@
 #!/bin/sh
+if [ -z "$3" ]; then
+    DATE_ARG="2 days ago"
+else
+    DATE_ARG="$3"
+fi
 
-MON=`date --date="$3" "+%b"`
-MONTH=`date --date="$3" "+%B"`
-YEAR=`date --date="$3" "+%Y"`
+MON=`date --date="$DATE_ARG" "+%b"`
+MONTH=`date --date="$DATE_ARG" "+%B"`
+YEAR=`date --date="$DATE_ARG" "+%Y"`
 CAM=$1
 CAMERA=$2
 DAY=1

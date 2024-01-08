@@ -50,10 +50,6 @@ done
 ffmpeg -r 12 -i "$tmp_folder/%d.webp" -c:v libvpx-vp9 -b:v 0 -crf 38 -deadline good -cpu-used 5 -vf "format=yuv420p" -pass 1 -an -f null /dev/null \
 && ffmpeg -r 12 -i "$tmp_folder/%d.webp" -c:v libvpx-vp9 -b:v 0 -crf 38 -deadline good -cpu-used 5 -vf "format=yuv420p" -pass 2 -an "$output_file"
 
-# Create the fast animation using ffmpeg in two-pass mode.
-ffmpeg -r 30 -i "$tmp_folder/%d.webp" -c:v libvpx-vp9 -b:v 0 -crf 42 -deadline good -cpu-used 5 -vf "format=yuv420p" -pass 1 -an -f null /dev/null \
-&& ffmpeg -r 30 -i "$tmp_folder/%d.webp" -c:v libvpx-vp9 -b:v 0 -crf 42 -deadline good -cpu-used 5 -vf "format=yuv420p" -pass 2 -an "$output_file_fast"
-
 # Move the new animations to today's folder and api folder.
 cp "$output_file" "$today_folder_path/animation.webm"
 cp "$output_file" "$api_folder/$camera/animation.webm"

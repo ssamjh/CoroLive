@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Timelapse Player</title>
+    <style>
+      #timelapse-container {
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: center;
+        position: relative;
+      }
+
+      #timelapse-image {
+        width: 100%;
+        height: auto;
+      }
+
+      #controls-container {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 10px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      #timelapse-container:hover #controls-container {
+        opacity: 1;
+      }
+
+      button {
+        margin: 0 5px;
+      }
+
+      #progress-bar {
+        flex-grow: 1;
+        height: 5px;
+        background-color: #a1a1a1;
+        margin: 0 10px;
+        position: relative;
+        cursor: pointer;
+      }
+
+      #progress {
+        width: 0;
+        height: 100%;
+        background-color: #4caf50;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      #downloaded-progress {
+        width: 0;
+        height: 100%;
+        background-color: #b6f9ff;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="timelapse-container">
+      <img id="timelapse-image" src="" alt="Timelapse Image" />
+      <div id="controls-container">
+        <button id="play-pause-btn">Play</button>
+        <div id="progress-bar">
+          <div id="downloaded-progress"></div>
+          <div id="progress"></div>
+        </div>
+        <button id="fullscreen-btn">Fullscreen</button>
+      </div>
+    </div>
+
+    <script>
+      const timelapseContainer = document.getElementById("timelapse-container");
+      const timelapseImage = document.getElementById("timelapse-image");
+      const playPauseBtn = document.getElementById("play-pause-btn");
+      const fullscreenBtn = document.getElementById("fullscreen-btn");
+      const progressBar = document.getElementById("progress-bar");
+      const progress = document.getElementById("progress");
+      const downloadedProgress = document.getElementById("downloaded-progress");
+      const apiUrl =
+        "https://api.corolive.nz/timelapse.php?cam=whitianga&year=2024&month=Apr&day=27";
+      const framesPerSecond = 12;
+
+      let timelapseInterval;
+      let imageDataArray = [];
+      let currentImageIndex = 0;
+      let isPlaying = false;
+      let isLoading = true;
+      let totalImageCount = 0;
+      let isPaused = false;
+
+      // Fetch the total count of files
+      function fetchTotalImageCount() {
+        fetch(`${apiUrl}&count=true`)
+          .then((response) => response.json())
+          .then((data) => {
+            totalImageCount = data.totalCount;
+          })
+          .catch((error) => {
+            console.error("Error fetching total image count:", error);
+          });
+      }
+
+      // Fetch the timelapse image data from the API in chunks
+      function fetchTimelapseData(startOffset) {
+        const firstChunkSize = 1024 * 1024; // 1 MB
+        const chunkSize = 512 * 1024; // 512 KB
+        const endOffset =
+          startOffset + (startOffset === 0 ? firstChunkSize : chunkSize);
+
+        fetch(`${apiUrl}&startOffset=${startOffset}&endOffset=${endOffset}`)
+          .then((response) => response.json())
+          .then((data) => {
+            imageDataArray = imageDataArray.concat(data);
+
+            if (data.length > 0) {
+              // More data available, fetch the next chunk
+              fetchTimelapseData(endOffset);
+            } else {
+              // All data loaded
+              isLoading = false;
+            }
+
+            if (!isPlaying && !isPaused && imageDataArray.length > 0) {
+              // Start playing automatically only if not paused and there are images available
+              startTimelapse();
+            }
+
+            updateDownloadedProgress();
+          })
+          .catch((error) => {
+            console.error("Error fetching timelapse data:", error);
+          });
+      }
+
+      // Start fetching the total image count
+      fetchTotalImageCount();
+
+      // Start fetching the timelapse data
+      fetchTimelapseData(0);
+
+      function updateDownloadedProgress() {
+        const downloadedWidth = (imageDataArray.length / totalImageCount) * 100;
+        downloadedProgress.style.width = downloadedWidth + "%";
+
+        // Update the unloaded portion of the progress bar
+        const unloadedWidth = 100 - downloadedWidth;
+        progressBar.style.background = `linear-gradient(to right, #fff ${downloadedWidth}%, #ddd ${downloadedWidth}%, #ddd ${unloadedWidth}%)`;
+      }
+
+      // Display the next image in the timelapse
+      function displayNextImage() {
+        if (currentImageIndex >= imageDataArray.length) {
+          if (isLoading) {
+            // Wait for more data to load
+            return;
+          } else {
+            // No more images, stop the timelapse
+            stopTimelapse();
+            return;
+          }
+        }
+
+        const imageData = imageDataArray[currentImageIndex];
+        timelapseImage.src = "data:image/webp;base64," + imageData;
+        currentImageIndex++;
+
+        // Update the progress bar
+        const progressWidth = (currentImageIndex / totalImageCount) * 100;
+        progress.style.width = progressWidth + "%";
+
+        // Update the loaded portion of the progress bar
+        const loadedWidth = (imageDataArray.length / totalImageCount) * 100;
+        downloadedProgress.style.width = loadedWidth + "%";
+      }
+
+      // Start the timelapse animation
+      function startTimelapse() {
+        isPlaying = true;
+        playPauseBtn.textContent = "Pause";
+        timelapseInterval = setInterval(
+          displayNextImage,
+          1000 / framesPerSecond
+        );
+      }
+
+      // Stop the timelapse animation
+      function stopTimelapse() {
+        isPlaying = false;
+        playPauseBtn.textContent = "Play";
+        clearInterval(timelapseInterval);
+      }
+
+      // Toggle play/pause on button click
+      playPauseBtn.addEventListener("click", () => {
+        if (isPlaying) {
+          stopTimelapse();
+          isPaused = true; // Set the paused state to true
+        } else {
+          if (currentImageIndex >= imageDataArray.length) {
+            // If the animation is complete, restart from the beginning
+            currentImageIndex = 0;
+            progress.style.width = "0%";
+          }
+          startTimelapse();
+          isPaused = false; // Set the paused state to false
+        }
+      });
+
+      // Toggle fullscreen on button click
+      fullscreenBtn.addEventListener("click", () => {
+        if (document.fullscreenElement) {
+          document.exitFullscreen();
+        } else {
+          timelapseContainer.requestFullscreen();
+        }
+      });
+
+      // Seek to a specific position on progress bar click
+      progressBar.addEventListener("click", (event) => {
+        const progressBarRect = progressBar.getBoundingClientRect();
+        const clickPosition = event.clientX - progressBarRect.left;
+        const seekPercentage = clickPosition / progressBarRect.width;
+        const seekIndex = Math.floor(seekPercentage * totalImageCount);
+
+        // Ignore clicks on undownloaded areas
+        if (seekIndex >= imageDataArray.length) {
+          return;
+        }
+
+        if (isPlaying) {
+          stopTimelapse();
+        }
+
+        currentImageIndex = seekIndex;
+        displayNextImage();
+
+        if (!isPlaying) {
+          startTimelapse();
+        }
+      });
+
+      // Seek to a specific position on progress bar click
+      progressBar.addEventListener("click", (event) => {
+        const progressBarRect = progressBar.getBoundingClientRect();
+        const clickPosition = event.clientX - progressBarRect.left;
+        const seekPercentage = clickPosition / progressBarRect.width;
+        const seekIndex = Math.floor(seekPercentage * totalImageCount);
+
+        // Ignore clicks on undownloaded areas
+        if (seekIndex >= imageDataArray.length) {
+          return;
+        }
+
+        if (isPlaying) {
+          stopTimelapse();
+        }
+
+        currentImageIndex = seekIndex;
+        displayNextImage();
+
+        if (!isPlaying) {
+          startTimelapse();
+        }
+      });
+    </script>
+  </body>
+</html>

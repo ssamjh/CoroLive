@@ -2,9 +2,10 @@
 <html lang="en" data-bs-theme="auto">
 
 <?php
+$allowedCameras = ['whitianga', 'whangamata', 'thames'];
 $camera = $_GET['camera'] ?? null;
 
-if (!$camera) {
+if (!in_array($camera, $allowedCameras)) {
     header("Location: /");
     exit;
 }

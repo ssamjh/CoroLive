@@ -8,9 +8,10 @@ $startDates = [
     'whitianga' => '2019-03-17',
 ];
 
+$allowedCameras = ['whitianga', 'whangamata', 'thames'];
 $camera = $_GET['camera'] ?? null;
 
-if (!$camera) {
+if (!in_array($camera, $allowedCameras)) {
     header("Location: /");
     exit;
 }

@@ -17,6 +17,8 @@ if ($direct_call) {
 ?>
 
 <?php
+$currentTime = new DateTime("now", new DateTimeZone("Pacific/Auckland"));
+$cutoffTime = DateTime::createFromFormat("H:i", "22:30", new DateTimeZone("Pacific/Auckland"));
 
 if (isset($_GET["date"])) {
     $date = DateTime::createFromFormat("Y-m-d", $_GET["date"]);
@@ -32,20 +34,14 @@ if (isset($_GET["date"])) {
     $camSrc = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/animation.{$vidExt}";
     $camPoster = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/snap-05:00.{$imgExt}";
 } else {
-    $date = new DateTime("now", new DateTimeZone("Pacific/Auckland"));
-
-    $tlDate1 = DateTime::createFromFormat("h:i a", $date->format("h:i a"));
-    $tlDate2 = DateTime::createFromFormat("h:i a", "0:00 am");
-    $tlDate3 = DateTime::createFromFormat("h:i a", "6:05 am");
-
-    if ($tlDate1 > $tlDate2 && $tlDate1 < $tlDate3) {
-        $date->modify("-1 day");
-        $camSrc = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/animation.webm";
-        $camPoster = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/snap-05:00.webp";
+    if ($currentTime < $cutoffTime) {
+        $date = new DateTime("1 day ago", new DateTimeZone("Pacific/Auckland"));
     } else {
-        $camSrc = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/animation.webm";
-        $camPoster = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/snap-05:00.webp";
+        $date = new DateTime("now", new DateTimeZone("Pacific/Auckland"));
     }
+
+    $camSrc = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/animation.webm";
+    $camPoster = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/snap-05:00.webp";
 }
 ?>
 

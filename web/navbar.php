@@ -35,8 +35,8 @@ if ($direct_call) {
                         data-bs-toggle="dropdown" aria-expanded="false"> Whitianga</a>
                     <ul class="dropdown-menu bg-info" aria-labelledby="navbarDropdownMenuLink">
                         <li><a class="dropdown-item text-white" href="whitianga">Live</a></li>
-                        <li><a class="dropdown-item text-white" href="whitianga-timelapse">Timelapse</a></li>
-                        <li><a class="dropdown-item text-white" href="whitianga-image-only">Image Only</a></li>
+                        <li><a class="dropdown-item text-white" href="timelapse?camera=whitianga">Timelapse</a></li>
+                        <li><a class="dropdown-item text-white" href="image-only?camera=whitianga">Image Only</a></li>
                         <li><a class="dropdown-item text-white" href="https://api.corolive.nz/whitianga/archive/"
                                 target="_blank">Archive</a></li>
                     </ul>
@@ -47,8 +47,8 @@ if ($direct_call) {
                         data-bs-toggle="dropdown" aria-expanded="false">Whangamata</a>
                     <ul class="dropdown-menu bg-info" aria-labelledby="navbarDropdownMenuLink">
                         <li><a class="dropdown-item text-white" href="whangamata">Live</a></li>
-                        <li><a class="dropdown-item text-white" href="whangamata-timelapse">Timelapse</a></li>
-                        <li><a class="dropdown-item text-white" href="whangamata-image-only">Image Only</a></li>
+                        <li><a class="dropdown-item text-white" href="timelapse?camera=whangamata">Timelapse</a></li>
+                        <li><a class="dropdown-item text-white" href="image-only?camera=whangamata">Image Only</a></li>
                         <li><a class="dropdown-item text-white" href="https://api.corolive.nz/whangamata/archive/"
                                 target="_blank">Archive</a></li>
                     </ul>
@@ -59,8 +59,8 @@ if ($direct_call) {
                         data-bs-toggle="dropdown" aria-expanded="false">Thames</a>
                     <ul class="dropdown-menu bg-info" aria-labelledby="navbarDropdownMenuLink">
                         <li><a class="dropdown-item text-white" href="thames">Live</a></li>
-                        <li><a class="dropdown-item text-white" href="thames-timelapse">Timelapse</a></li>
-                        <li><a class="dropdown-item text-white" href="thames-image-only">Image Only</a></li>
+                        <li><a class="dropdown-item text-white" href="timelapse?camera=thames">Timelapse</a></li>
+                        <li><a class="dropdown-item text-white" href="image-only?camera=thames">Image Only</a></li>
                         <li><a class="dropdown-item text-white" href="https://api.corolive.nz/thames/archive/"
                                 target="_blank">Archive</a></li>
                     </ul>

@@ -15,7 +15,7 @@ if (!$camera) {
     exit;
 }
 
-$startDate = $startDates[$camera] ?? null;
+$startDate = $startDates[$camera]  ?? null;
 
 $currentTime = new DateTime("now", new DateTimeZone("Pacific/Auckland"));
 $cutoffTime = DateTime::createFromFormat("H:i", "22:30", new DateTimeZone("Pacific/Auckland"));

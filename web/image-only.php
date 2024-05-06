@@ -1,27 +1,21 @@
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+
 <?php
-$backtrace = debug_backtrace();
-$direct_call = true;
+$camera = $_GET['camera'] ?? null;
 
-foreach ($backtrace as $trace) {
-    if (basename($trace['file']) !== basename(__FILE__)) {
-        $direct_call = false;
-        break;
-    }
-}
-
-if ($direct_call) {
-    header('HTTP/1.0 403 Forbidden');
-    echo 'You are not allowed to access this file directly.';
+if (!$camera) {
+    header("Location: /");
     exit;
 }
+
+$cameraCapitalized = ucfirst($camera);
+$pageName = "$cameraCapitalized Image Only - CoroLive";
+
+require 'head.php';
 ?>
 
 <head>
-    <?php $cameraCapitalized = ucfirst($camera); ?>
-    <?php $pageName = "$cameraCapitalized Image Only - CoroLive"; ?>
-
-    <?php require 'head.php'; ?>
-
     <meta property="og:image" content="https://api.corolive.nz/<?php echo "$camera"; ?>/snap.webp" />
 </head>
 

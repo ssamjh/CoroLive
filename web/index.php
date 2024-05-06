@@ -47,7 +47,7 @@
                             <h5 class='card-title text-center'>{$location['name']}</h5>
                             <div class='center'>
                                 <a href='{$location['id']}' class='btn btn-primary'>Live</a>
-                                <a href='{$location['id']}-timelapse' class='btn btn-secondary'>Timelapse</a>
+                                <a href='timelapse?camera={$location['id']}' class='btn btn-secondary'>Timelapse</a>
                             </div>
                         </div>
                     </div>

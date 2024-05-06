@@ -12,11 +12,11 @@
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://corolive.nz/whitianga-timelapse</loc>
+    <loc>https://corolive.nz/timelapse?camera=whitianga</loc>
     <priority>0.50</priority>
   </url>
   <url>
-    <loc>https://corolive.nz/whitianga-image-only</loc>
+    <loc>https://corolive.nz/image-only?camera=whitianga</loc>
     <priority>0.10</priority>
   </url>
   <url>
@@ -24,11 +24,11 @@
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://corolive.nz/whangamata-timelapse</loc>
+    <loc>https://corolive.nz/timelapse?camera=whangamata</loc>
     <priority>0.50</priority>
   </url>
   <url>
-    <loc>https://corolive.nz/whangamata-image-only</loc>
+    <loc>https://corolive.nz/image-only?camera=whangamata</loc>
     <priority>0.10</priority>
   </url>
   <url>
@@ -36,11 +36,11 @@
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://corolive.nz/thames-timelapse</loc>
+    <loc>https://corolive.nz/timelapse?camera=thames</loc>
     <priority>0.50</priority>
   </url>
   <url>
-    <loc>https://corolive.nz/thames-image-only</loc>
+    <loc>https://corolive.nz/image-only?camera=thames</loc>
     <priority>0.10</priority>
   </url>
   <url>

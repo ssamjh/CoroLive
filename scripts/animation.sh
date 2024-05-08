@@ -12,9 +12,6 @@ tmp_folder="/run/animation-$camera"
 # Set the output file name and format.
 output_file="$tmp_folder/animation.webm"
 
-# Set the api folder path.
-api_folder="/var/www/corolive.nz/api"
-
 
 
 # Remove the old animation folder if it exists.
@@ -48,7 +45,7 @@ ffmpeg -r 12 -i "$tmp_folder/%d.webp" -c:v libvpx-vp9 -b:v 0 -crf 38 -deadline g
 && ffmpeg -r 12 -i "$tmp_folder/%d.webp" -c:v libvpx-vp9 -b:v 0 -crf 38 -deadline good -cpu-used 5 -vf "format=yuv420p" -pass 2 -an "$output_file"
 
 # Move the new animation to the api folder.
-cp "$output_file" "$api_folder/$camera/animation.webm"
+cp "$output_file" "$today_folder_path/animation.webm"
 
 # Remove the animation folder.
 rm -rf "$tmp_folder"

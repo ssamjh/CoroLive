@@ -43,7 +43,6 @@ if [ "$mode" == "snap" ]; then
     
     #Remove tmp file.
     rm /run/$camera-api.jpg
-    rm /run/$camera-api-resized.jpg
     
 else
     exit 1

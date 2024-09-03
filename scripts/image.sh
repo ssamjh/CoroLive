@@ -44,6 +44,20 @@ if [ "$mode" == "snap" ]; then
     #Remove tmp file.
     rm /run/$camera-api.jpg
     
+    # Create index.json file
+    cd "$today_folder_path"
+    echo -n "[" > index.json
+    first=true
+    for file in $(ls snap-*.avif | sort -V); do
+        if ! $first; then
+            echo -n "," >> index.json
+        else
+            first=false
+        fi
+        echo -n "\"$file\"" >> index.json
+    done
+    echo -n "]" >> index.json
+    
 else
     exit 1
 fi

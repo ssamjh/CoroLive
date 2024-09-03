@@ -39,6 +39,7 @@ if (isset($_GET["date"])) {
 
     $camSrc = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/animation.{$vidExt}";
     $camPoster = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/snap-05:00.{$imgExt}";
+    $camOgURL = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/snap-12:00.{$imgExt}";
 } else {
     if ($currentTime < $cutoffTime) {
         $date = new DateTime("1 day ago", new DateTimeZone("Pacific/Auckland"));
@@ -48,16 +49,15 @@ if (isset($_GET["date"])) {
 
     $camSrc = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/animation.webm";
     $camPoster = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/snap-05:00.avif";
+    $camOgURL = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/snap-12:00.avif";
 }
 
 $cameraCapitalized = ucfirst($camera);
 $pageName = "$cameraCapitalized Timelapse - CoroLive";
-
-require 'head.php';
-require 'og-image.php';
 ?>
 
 <head>
+    <?php require 'head.php'; ?>
     <meta property="og:image" content="<?php echo "$camOgURL"; ?>" />
 </head>
 

@@ -10,18 +10,18 @@ if [ "$mode" == "snap" ]; then
     # Set i to 0.
     i=0
     
-    # Loop 4 times to attempt to update every 15s.
-    while ((i < 4)); do
+    # Loop 2 times to attempt to update every 15s.
+    while ((i < 2)); do
         curl --connect-timeout 2 --retry 4 --retry-delay 1 -s -S -f -o /run/$camera-snap.jpg $url \
         && cwebp /run/$camera-snap.jpg -quiet -preset photo -resize 1920 1080 -o /run/$camera-snap.webp \
         && mv /run/$camera-snap.webp "/var/www/corolive.nz/api/$camera/snap.webp"
         
         # Remove tmp file.
         rm "/run/$camera-snap.jpg"
-
-        # Wait 15 seconds.
-        sleep 15
-
+        
+        # Wait 30 seconds.
+        sleep 30
+        
         # Increase i by 1.
         ((i++));
     done
@@ -37,13 +37,13 @@ if [ "$mode" == "snap" ]; then
         mkdir -p "$today_folder_path"
     fi
     
-    #Grab a still from camera.
     curl --connect-timeout 2 --retry 4 --retry-delay 1 -s -S -f -o /run/$camera-api.jpg $url \
-    && cwebp /run/$camera-api.jpg -quiet -preset photo -q 50 -resize 1280 720 -metadata none -o /run/$camera-api-optimised.webp \
-    && mv /run/$camera-api-optimised.webp "$today_folder_path/snap-$(date +%R).webp"
+    && convert /run/$camera-api.jpg -resize '1280x720>' -quality 53 -define avif:compression-level=4 -define avif:speed=0 -define avif:tiling=1 /run/$camera-api-optimised.avif \
+    && mv /run/$camera-api-optimised.avif "$today_folder_path/snap-$(date +%R).avif"
     
     #Remove tmp file.
     rm /run/$camera-api.jpg
+    rm /run/$camera-api-resized.jpg
     
 else
     exit 1

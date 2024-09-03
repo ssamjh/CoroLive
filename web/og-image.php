@@ -19,11 +19,15 @@ if ($direct_call) {
 <?php
 if (isset($_GET['date'])) {
     $dateOgCurrent = DateTime::createFromFormat('Y-m-d', $_GET['date']);
+    $cutoff2022 = DateTime::createFromFormat('Y-m-d', '2022-02-28');
+    $cutoff2024 = DateTime::createFromFormat('Y-m-d', '2024-09-01');
 
-    if (DateTime::createFromFormat('Y-m-d', '2022-02-28') > $dateOgCurrent) {
+    if ($dateOgCurrent <= $cutoff2022) {
         $imgExt = 'jpg';
-    } else {
+    } elseif ($dateOgCurrent < $cutoff2024) {
         $imgExt = 'webp';
+    } else {
+        $imgExt = 'avif';
     }
 
     $camOgURL = "https://api.corolive.nz/{$camera}/archive/{$dateOgCurrent->format('Y')}/{$dateOgCurrent->format('M')}/{$dateOgCurrent->format('d')}/snap-12:00.{$imgExt}";

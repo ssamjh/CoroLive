@@ -23,13 +23,18 @@ $cutoffTime = DateTime::createFromFormat("H:i", "22:30", new DateTimeZone("Pacif
 
 if (isset($_GET["date"])) {
     $date = DateTime::createFromFormat("Y-m-d", $_GET["date"]);
+    $cutoff2022 = DateTime::createFromFormat("Y-m-d", "2022-03-01");
+    $cutoff2024 = DateTime::createFromFormat("Y-m-d", "2024-09-01");
 
-    if (DateTime::createFromFormat("Y-m-d", "2022-03-01") > $date) {
+    if ($date < $cutoff2022) {
         $vidExt = "mp4";
         $imgExt = "jpg";
-    } else {
+    } elseif ($date < $cutoff2024) {
         $vidExt = "webm";
         $imgExt = "webp";
+    } else {
+        $vidExt = "webm";
+        $imgExt = "avif";
     }
 
     $camSrc = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/animation.{$vidExt}";
@@ -42,7 +47,7 @@ if (isset($_GET["date"])) {
     }
 
     $camSrc = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/animation.webm";
-    $camPoster = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/snap-05:00.webp";
+    $camPoster = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/snap-05:00.avif";
 }
 
 $cameraCapitalized = ucfirst($camera);

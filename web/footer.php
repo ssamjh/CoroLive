@@ -88,3 +88,8 @@
         window.attachEvent("onload", $buo_f)
     }
 </script>
+
+<noscript>
+    <img src="https://stats.sjh.at/ingress/b9602807-fabc-4aea-90c5-c276bd4b31bb/pixel.gif">
+</noscript>
+<script defer src="https://stats.sjh.at/ingress/b9602807-fabc-4aea-90c5-c276bd4b31bb/script.js"></script>

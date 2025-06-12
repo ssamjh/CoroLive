@@ -23,17 +23,17 @@
                 [
                     'name' => 'Whitianga',
                     'id' => 'whitianga',
-                    'imgUrl' => 'https://api.corolive.nz/imgproxy/S5fvR7DSxAnpNu1Os0xd37tAiFNTAR-l1bpoqPvPTRY/rs:fit::360:0/g:no/aHR0cHM6Ly9hcGkuY29yb2xpdmUubnovd2hpdGlhbmdhL3NuYXAud2VicA.webp',
+                    'imgUrl' => 'https://api.corolive.nz/whitianga/snap.webp',
                 ],
                 [
                     'name' => 'Whangamata',
                     'id' => 'whangamata',
-                    'imgUrl' => 'https://api.corolive.nz/imgproxy/9nD2ByfvIPnevn470C9-JJ6lt62L7STOasLq6QMsFak/rs:fit::360:0/g:no/aHR0cHM6Ly9hcGkuY29yb2xpdmUubnovd2hhbmdhbWF0YS9zbmFwLndlYnA.webp',
+                    'imgUrl' => 'https://api.corolive.nz/whangamata/snap.webp',
                 ],
                 [
                     'name' => 'Thames',
                     'id' => 'thames',
-                    'imgUrl' => 'https://api.corolive.nz/imgproxy/e7DkeRUycsd3to1M7TU2yHxBWK-GvvAiMus8jWNBmDM/rs:fit::360:0/g:no/aHR0cHM6Ly9hcGkuY29yb2xpdmUubnovdGhhbWVzL3NuYXAud2VicA.webp',
+                    'imgUrl' => 'https://api.corolive.nz/thames/snap.webp',
                 ],
             ];
 

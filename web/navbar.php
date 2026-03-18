@@ -13,9 +13,9 @@
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle bg-info text-white" id="navbarDropdownMenuLink" role="button"
+                    <a class="nav-link dropdown-toggle bg-info text-white" id="navbarDropdown-whitianga" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false"> Whitianga</a>
-                    <ul class="dropdown-menu bg-info" aria-labelledby="navbarDropdownMenuLink">
+                    <ul class="dropdown-menu bg-info" aria-labelledby="navbarDropdown-whitianga">
                         <li><a class="dropdown-item text-white" href="whitianga">Live</a></li>
                         <li><a class="dropdown-item text-white" href="timelapse?camera=whitianga">Timelapse</a></li>
                         <li><a class="dropdown-item text-white" href="image-only?camera=whitianga">Image Only</a></li>
@@ -25,9 +25,9 @@
                 </li>
 
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle bg-info text-white" id="navbarDropdownMenuLink" role="button"
+                    <a class="nav-link dropdown-toggle bg-info text-white" id="navbarDropdown-whangamata" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">Whangamata</a>
-                    <ul class="dropdown-menu bg-info" aria-labelledby="navbarDropdownMenuLink">
+                    <ul class="dropdown-menu bg-info" aria-labelledby="navbarDropdown-whangamata">
                         <li><a class="dropdown-item text-white" href="whangamata">Live</a></li>
                         <li><a class="dropdown-item text-white" href="timelapse?camera=whangamata">Timelapse</a></li>
                         <li><a class="dropdown-item text-white" href="image-only?camera=whangamata">Image Only</a></li>
@@ -37,9 +37,9 @@
                 </li>
 
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle bg-info text-white" id="navbarDropdownMenuLink" role="button"
+                    <a class="nav-link dropdown-toggle bg-info text-white" id="navbarDropdown-thames" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">Thames</a>
-                    <ul class="dropdown-menu bg-info" aria-labelledby="navbarDropdownMenuLink">
+                    <ul class="dropdown-menu bg-info" aria-labelledby="navbarDropdown-thames">
                         <li><a class="dropdown-item text-white" href="thames">Live</a></li>
                         <li><a class="dropdown-item text-white" href="timelapse?camera=thames">Timelapse</a></li>
                         <li><a class="dropdown-item text-white" href="image-only?camera=thames">Image Only</a></li>

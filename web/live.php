@@ -5,14 +5,14 @@
     <?php require 'head.php'; ?>
 
     <meta property="og:image"
-        content="https://api.corolive.nz/<?php echo "$camera"; ?>/snap.webp?rand=<?php echo (rand()); ?>" />
+        content="https://api.corolive.nz/<?php echo $camera; ?>/snap.webp?rand=<?php echo rand(); ?>" />
 </head>
 
 <body>
     <?php require 'navbar.php'; ?>
 
     <h3 class="text-center">
-        <?php echo "$cameraCapitalized"; ?> Live Stream
+        <?php echo $cameraCapitalized; ?> Live Stream
     </h3>
 
     <br>
@@ -21,8 +21,8 @@
 
     <script>
         var config = {
-            source: 'https://api.corolive.nz/hls/<?php echo "$camera"; ?>.m3u8',
-            poster: 'https://api.corolive.nz/<?php echo "$camera"; ?>/snap.webp?rand=<?php echo (rand()); ?>',
+            source: 'https://api.corolive.nz/hls/<?php echo $camera; ?>.m3u8',
+            poster: 'https://api.corolive.nz/<?php echo $camera; ?>/snap.webp?rand=<?php echo rand(); ?>',
             parentId: '#player',
             position: 'bottom-right',
             mute: true,
@@ -106,15 +106,15 @@
         function qualityUpdate(qual) {
             if (qual == "auto") {
                 player.configure({
-                    source: 'https://api.corolive.nz/hls/<?php echo "$camera"; ?>.m3u8',
+                    source: 'https://api.corolive.nz/hls/<?php echo $camera; ?>.m3u8',
                 });
             } else if (qual == "high") {
                 player.configure({
-                    source: 'https://api.corolive.nz/hls/<?php echo "$camera"; ?>_high.m3u8',
+                    source: 'https://api.corolive.nz/hls/<?php echo $camera; ?>_high.m3u8',
                 });
             } else if (qual == "low") {
                 player.configure({
-                    source: 'https://api.corolive.nz/hls/<?php echo "$camera"; ?>_low.m3u8',
+                    source: 'https://api.corolive.nz/hls/<?php echo $camera; ?>_low.m3u8',
                 });
             }
         }

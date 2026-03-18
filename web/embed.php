@@ -1,17 +1,23 @@
 <?php
-$camSrc = "https://api.corolive.nz/hls/$_GET[camera].m3u8";
-$camPoster = "https://api.corolive.nz/$_GET[camera]/snap.webp?rand=" . rand();
+$allowedCameras = ['whitianga', 'whangamata', 'thames'];
+$camera = $_GET['camera'] ?? null;
+
+if (!in_array($camera, $allowedCameras)) {
+    http_response_code(400);
+    exit;
+}
+
+$camSrc = "https://api.corolive.nz/hls/{$camera}.m3u8";
+$camPoster = "https://api.corolive.nz/{$camera}/snap.webp?rand=" . rand();
 
 require 'player.php';
 ?>
 
-
 <script>
     var config = {
-        source: '<?php echo "$camSrc"; ?>',
-        poster: '<?php echo "$camPoster"; ?>',
+        source: '<?php echo $camSrc; ?>',
+        poster: '<?php echo $camPoster; ?>',
         watermark: "https://corolive.nz/img/watermark.webp",
-        position: 'bottom-right',
         watermarkLink: 'https://corolive.nz',
         parentId: '#player',
         position: 'bottom-right',

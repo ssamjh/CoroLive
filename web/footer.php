@@ -40,7 +40,7 @@
         </div>
 
         <div class="text-center fw-light">
-            &copy CoroLive
+            &copy; CoroLive
             <script>
                 document.write(new Date().getFullYear());
             </script><br>Created with &#10084 using <a href="https://getbootstrap.com/">Bootstrap</a> on <a
@@ -48,19 +48,6 @@
         </div>
     </footer>
 </div>
-
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-191965282-1"></script>
-<script>
-    window.dataLayer = window.dataLayer || [];
-
-    function gtag() {
-        dataLayer.push(arguments);
-    }
-    gtag('js', new Date());
-
-    gtag('config', 'UA-191965282-1');
-</script>
 
 <script>
     var $buoop = {

@@ -37,9 +37,10 @@ if (isset($_GET["date"])) {
         $imgExt = "avif";
     }
 
-    $camSrc = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/animation.{$vidExt}";
-    $camPoster = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/snap-05:00.{$imgExt}";
-    $camOgURL = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/snap-12:00.{$imgExt}";
+    $basePath = "https://api.corolive.nz/{$camera}/archive/{$date->format('Y/M/d')}";
+    $camSrc = "{$basePath}/animation.{$vidExt}";
+    $camPoster = "{$basePath}/snap-05:00.{$imgExt}";
+    $camOgURL = "{$basePath}/snap-12:00.{$imgExt}";
 } else {
     if ($currentTime < $cutoffTime) {
         $date = new DateTime("1 day ago", new DateTimeZone("Pacific/Auckland"));
@@ -47,9 +48,10 @@ if (isset($_GET["date"])) {
         $date = new DateTime("now", new DateTimeZone("Pacific/Auckland"));
     }
 
-    $camSrc = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/animation.webm";
-    $camPoster = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/snap-05:00.avif";
-    $camOgURL = "https://api.corolive.nz/{$camera}/archive/{$date->format("Y")}/{$date->format("M")}/{$date->format("d")}/snap-12:00.avif";
+    $basePath = "https://api.corolive.nz/{$camera}/archive/{$date->format('Y/M/d')}";
+    $camSrc = "{$basePath}/animation.webm";
+    $camPoster = "{$basePath}/snap-05:00.avif";
+    $camOgURL = "{$basePath}/snap-12:00.avif";
 }
 
 $cameraCapitalized = ucfirst($camera);
@@ -58,14 +60,14 @@ $pageName = "$cameraCapitalized Timelapse - CoroLive";
 
 <head>
     <?php require 'head.php'; ?>
-    <meta property="og:image" content="<?php echo "$camOgURL"; ?>" />
+    <meta property="og:image" content="<?php echo $camOgURL; ?>" />
 </head>
 
 <body>
     <?php require 'navbar.php'; ?>
 
     <h3 class="text-center">
-        <?php echo "$cameraCapitalized"; ?> Timelapse
+        <?php echo $cameraCapitalized; ?> Timelapse
     </h3>
 
     <br>
@@ -74,8 +76,8 @@ $pageName = "$cameraCapitalized Timelapse - CoroLive";
 
     <script>
         var config = {
-            source: '<?php echo "$camSrc"; ?>',
-            poster: '<?php echo "$camPoster"; ?>',
+            source: '<?php echo $camSrc; ?>',
+            poster: '<?php echo $camPoster; ?>',
             parentId: '#player',
             position: 'bottom-right',
             mute: true,
@@ -97,13 +99,8 @@ $pageName = "$cameraCapitalized Timelapse - CoroLive";
 
     <?php
     $maxDate = new DateTime("now", new DateTimeZone('Pacific/Auckland'));
-
-    $maxDate1 = DateTime::createFromFormat('h:i a', $maxDate->format('h:i a'));
-    $maxDate2 = DateTime::createFromFormat('h:i a', '0:00 am');
-    $maxDate3 = DateTime::createFromFormat('h:i a', '6:05 am');
-
-    if ($maxDate1 > $maxDate2 && $maxDate1 < $maxDate3) {
-        $maxDate->modify("-1 day");
+    if ($maxDate->format('H:i') < '06:05') {
+        $maxDate->modify('-1 day');
     }
     ?>
 

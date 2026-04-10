@@ -7,7 +7,7 @@ if (!in_array($camera, $allowedCameras)) {
     exit;
 }
 
-$camSrc = "https://api.corolive.nz/hls/{$camera}.m3u8";
+$camSrc = "https://api.corolive.nz/hls/{$camera}_high.m3u8";
 $camPoster = "https://api.corolive.nz/{$camera}/snap.webp?rand=" . rand();
 
 require 'player.php';

@@ -19,7 +19,7 @@ if (!in_array($camera, $allowedCameras)) {
 $startDate = $startDates[$camera] ?? null;
 
 $currentTime = new DateTime("now", new DateTimeZone("Pacific/Auckland"));
-$cutoffTime = DateTime::createFromFormat("H:i", "22:30", new DateTimeZone("Pacific/Auckland"));
+$cutoffTime = DateTime::createFromFormat("H:i", "06:00", new DateTimeZone("Pacific/Auckland"));
 
 if (isset($_GET["date"])) {
     $date = DateTime::createFromFormat("Y-m-d", $_GET["date"]);

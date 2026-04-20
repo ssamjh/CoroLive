@@ -4,8 +4,14 @@ image.py — live capture and end-of-day processing for the per-day SQLite archi
 
 Usage:
   python3 image.py snap      <camera> <url>   # fetch + write live snap.avif for frontend
-  python3 image.py api       <camera> <url>   # fetch + archive frame in DB, update index.json
-  python3 image.py animation <camera>          # encode animation.webm + thumbnail.avif for today
+  python3 image.py api       <camera> <url>   # fetch + archive frame in DB, update index.json + thumbnail.avif
+  python3 image.py animation <camera>          # encode animation.webm for today
+
+Thumbnail logic (managed during api calls):
+  Before 12:00 — thumbnail.avif is overwritten with each new frame (latest = closest to noon so far)
+  After  12:00 — thumbnail.avif is left untouched (preserves the last pre-noon frame)
+  Fallback     — if thumbnail.avif is missing after noon (camera was down all morning),
+                 the DB frame closest to 12:00 is used instead
 
 Environment:
   COROLIVE_BASE_DIR   Root path for camera data (default: /var/www/corolive.nz/api)
@@ -210,15 +216,32 @@ def cmd_api(camera: str, url: str) -> None:
     )
     conn.commit()
     write_index_json(conn, out_dir / "index.json")
+    update_thumbnail(conn, out_dir, data, minutes, ts)
     conn.close()
     print(f"Stored {fname} ({len(data) / 1024:.0f} KB) → {db_path}")
 
 
-def write_thumbnail(rows: list, out_dir: Path) -> None:
-    _, best_data = min(rows, key=lambda r: abs(ts_to_minutes(r[0]) - NOON_MINUTES))
+def update_thumbnail(
+    conn: sqlite3.Connection,
+    out_dir: Path,
+    current_data: bytes,
+    minutes: int,
+    ts: str,
+) -> None:
     thumb_path = out_dir / "thumbnail.avif"
-    thumb_path.write_bytes(best_data)
-    print(f"Wrote {thumb_path} ({len(best_data) / 1024:.0f} KB)")
+    if minutes < NOON_MINUTES:
+        thumb_path.write_bytes(current_data)
+        print(f"Updated {thumb_path} ({len(current_data) / 1024:.0f} KB)")
+    elif not thumb_path.exists():
+        rows = conn.execute(
+            "SELECT timestamp, data FROM frames ORDER BY timestamp"
+        ).fetchall()
+        if rows:
+            _, best_data = min(
+                rows, key=lambda r: abs(ts_to_minutes(r[0]) - NOON_MINUTES)
+            )
+            thumb_path.write_bytes(best_data)
+            print(f"Wrote fallback {thumb_path} ({len(best_data) / 1024:.0f} KB)")
 
 
 def cmd_animation(camera: str) -> None:
@@ -240,8 +263,6 @@ def cmd_animation(camera: str) -> None:
     if not rows:
         print("No frames in db.", file=sys.stderr)
         sys.exit(1)
-
-    write_thumbnail([(r[0], r[2]) for r in rows], out_dir)
 
     tmp = Path(tempfile.mkdtemp())
     try:

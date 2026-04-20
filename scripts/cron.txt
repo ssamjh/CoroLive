@@ -1,38 +1,23 @@
 ## CoroLive
 
 # Grab a still snapshot and save it.
-*/2 5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21 * * * bash /opt/corolive/image.sh api whitianga http://username:password@127.0.0.1/GetSnapshot >/dev/null 2>&1
-0 22 * * * bash /opt/corolive/image.sh api whitianga http://username:password@127.0.0.1/GetSnapshot >/dev/null 2>&1
+*/2 5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21 * * * python3 /opt/corolive/image.py api whitianga http://username:password@127.0.0.1/GetSnapshot >/dev/null 2>&1
+0 22 * * * python3 /opt/corolive/image.py api whitianga http://username:password@127.0.0.1/GetSnapshot >/dev/null 2>&1
 
-*/2 5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21 * * * bash /opt/corolive/image.sh api whangamata http://username:password@127.0.0.1/GetSnapshot >/dev/null 2>&1
-0 22 * * * bash /opt/corolive/image.sh api whangamata http://username:password@127.0.0.1/GetSnapshot >/dev/null 2>&1
+*/2 5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21 * * * python3 /opt/corolive/image.py api whangamata http://username:password@127.0.0.1/GetSnapshot >/dev/null 2>&1
+0 22 * * * python3 /opt/corolive/image.py api whangamata http://username:password@127.0.0.1/GetSnapshot >/dev/null 2>&1
 
-*/2 5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21 * * * bash /opt/corolive/image.sh api thames http://username:password@127.0.0.1/GetSnapshot >/dev/null 2>&1
-0 22 * * * bash /opt/corolive/image.sh api thames http://username:password@127.0.0.1/GetSnapshot >/dev/null 2>&1
+*/2 5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21 * * * python3 /opt/corolive/image.py api thames http://username:password@127.0.0.1/GetSnapshot >/dev/null 2>&1
+0 22 * * * python3 /opt/corolive/image.py api thames http://username:password@127.0.0.1/GetSnapshot >/dev/null 2>&1
 
 
 # Create animation with todays images.
-1 22 * * * bash /opt/corolive/animation.sh whitianga >/dev/null 2>&1
-6 22 * * * bash /opt/corolive/animation.sh whangamata >/dev/null 2>&1
-11 22 * * * bash /opt/corolive/animation.sh thames >/dev/null 2>&1
+10 22 * * * python3 /opt/corolive/image.py animation whitianga >/dev/null 2>&1
+16 22 * * * python3 /opt/corolive/image.py animation whangamata >/dev/null 2>&1
+21 22 * * * python3 /opt/corolive/image.py animation thames >/dev/null 2>&1
 
 
 # Update image-only.
-* * * * * bash /opt/corolive/image.sh snap whitianga http://username:password@127.0.0.1/GetSnapshot >/dev/null 2>&1
-* * * * * bash /opt/corolive/image.sh snap whangamata http://username:password@127.0.0.1/GetSnapshot >/dev/null 2>&1
-* * * * * bash /opt/corolive/image.sh snap thames http://username:password@127.0.0.1/GetSnapshot >/dev/null 2>&1
-
-
-#Create monthly timelapse for Whitianga at 2:00am
-0 2 1 * * bash /opt/corolive/monthlapse.sh whitianga >/dev/null 2>&1
-#Create monthly timelapse for Whangamata at 2:30am
-30 2 1 * * bash /opt/corolive/monthlapse.sh whangamata >/dev/null 2>&1
-#Create monthly timelapse for Thames at 3:00am
-0 3 1 * * bash /opt/corolive/monthlapse.sh thames >/dev/null 2>&1
-
-#Create yearly timelapse for Whitianga at 4:00am
-0 4 1 1 * bash /opt/corolive/yearlapse.sh whitianga >/dev/null 2>&1
-#Create yearly timelapse for Whangamata at 4:30am
-30 4 1 1 * bash /opt/corolive/yearlapse.sh whangamata >/dev/null 2>&1
-#Create yearly timelapse for Thames at 5:00am
-0 5 1 1 * bash /opt/corolive/yearlapse.sh thames >/dev/null 2>&1
+* * * * * python3 /opt/corolive/image.py snap whitianga http://username:password@127.0.0.1/GetSnapshot >/dev/null 2>&1
+* * * * * python3 /opt/corolive/image.py snap whangamata http://username:password@127.0.0.1/GetSnapshot >/dev/null 2>&1
+* * * * * python3 /opt/corolive/image.py snap thames http://username:password@127.0.0.1/GetSnapshot >/dev/null 2>&1

@@ -3,13 +3,15 @@
 image.py — live capture and end-of-day processing for the per-day SQLite archive.
 
 Usage:
-  python3 image.py snap      <camera> <url>   # fetch + store one frame, update index.json
+  python3 image.py snap      <camera> <url>   # fetch + write live snap.avif for frontend
+  python3 image.py api       <camera> <url>   # fetch + archive frame in DB, update index.json
   python3 image.py animation <camera>          # encode animation.webm + thumbnail.avif for today
 
 Environment:
   COROLIVE_BASE_DIR   Root path for camera data (default: /var/www/corolive.nz/api)
 
 Output layout:
+  <BASE_DIR>/<camera>/snap.avif
   <BASE_DIR>/<camera>/<YYYY>/<MM>/<DD>/images.db
   <BASE_DIR>/<camera>/<YYYY>/<MM>/<DD>/index.json
   <BASE_DIR>/<camera>/<YYYY>/<MM>/<DD>/thumbnail.avif
@@ -26,15 +28,19 @@ import shutil
 from datetime import datetime
 from pathlib import Path
 
-BASE_DIR = Path(os.environ.get("COROLIVE_BASE_DIR", "/var/www/corolive.nz/api-2"))
+BASE_DIR = Path(os.environ.get("COROLIVE_BASE_DIR", "/var/www/corolive.nz/api"))
 
 NOON_MINUTES = 12 * 60
 
 
 def check_dependencies():
-    missing = [p for p in ("ffmpeg", "convert", "curl") if shutil.which(p) is None]
+    missing = [
+        p for p in ("ffmpeg", "convert", "cwebp", "curl") if shutil.which(p) is None
+    ]
     if missing:
-        print(f"Error: missing required programs: {', '.join(missing)}", file=sys.stderr)
+        print(
+            f"Error: missing required programs: {', '.join(missing)}", file=sys.stderr
+        )
         sys.exit(1)
 
 
@@ -50,7 +56,8 @@ def ts_to_minutes(ts: str) -> int:
 def open_db(db_path: Path) -> sqlite3.Connection:
     db_path.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(db_path)
-    conn.execute("""
+    conn.execute(
+        """
         CREATE TABLE IF NOT EXISTS frames (
             id        INTEGER PRIMARY KEY AUTOINCREMENT,
             filename  TEXT NOT NULL,
@@ -58,22 +65,50 @@ def open_db(db_path: Path) -> sqlite3.Connection:
             ext       TEXT NOT NULL,
             data      BLOB NOT NULL
         )
-    """)
-    conn.execute("CREATE INDEX IF NOT EXISTS idx_frames_timestamp ON frames (timestamp)")
+    """
+    )
+    conn.execute(
+        "CREATE INDEX IF NOT EXISTS idx_frames_timestamp ON frames (timestamp)"
+    )
     conn.commit()
     return conn
+
+
+def to_webp(src: Path, out: Path) -> bool:
+    result = subprocess.run(
+        [
+            "cwebp",
+            str(src),
+            "-quiet",
+            "-preset",
+            "photo",
+            "-resize",
+            "1920",
+            "1080",
+            "-o",
+            str(out),
+        ],
+        capture_output=True,
+    )
+    return result.returncode == 0
 
 
 def to_avif(src: Path, out: Path) -> bool:
     """Convert src to AVIF at 720p using the exact settings from image.sh."""
     result = subprocess.run(
         [
-            "convert", str(src),
-            "-resize", "1280x720>",
-            "-quality", "53",
-            "-define", "avif:compression-level=4",
-            "-define", "avif:speed=0",
-            "-define", "avif:tiling=1",
+            "convert",
+            str(src),
+            "-resize",
+            "1280x720>",
+            "-quality",
+            "53",
+            "-define",
+            "avif:compression-level=4",
+            "-define",
+            "avif:speed=0",
+            "-define",
+            "avif:tiling=1",
             str(out),
         ],
         capture_output=True,
@@ -88,7 +123,52 @@ def write_index_json(conn: sqlite3.Connection, index_path: Path) -> None:
     index_path.write_text(json.dumps(filenames))
 
 
+def fetch_jpg(url: str, dest: Path) -> None:
+    result = subprocess.run(
+        [
+            "curl",
+            "--connect-timeout",
+            "2",
+            "--retry",
+            "4",
+            "--retry-delay",
+            "1",
+            "-s",
+            "-S",
+            "-f",
+            "-o",
+            str(dest),
+            url,
+        ],
+        capture_output=True,
+    )
+    if result.returncode != 0:
+        print(f"curl failed: {result.stderr.decode().strip()}", file=sys.stderr)
+        sys.exit(1)
+
+
 def cmd_snap(camera: str, url: str) -> None:
+    snap_path = BASE_DIR / camera / "snap.webp"
+    snap_path.parent.mkdir(parents=True, exist_ok=True)
+
+    tmp = Path(tempfile.mkdtemp())
+    try:
+        src_jpg = tmp / "snap.jpg"
+        fetch_jpg(url, src_jpg)
+
+        out_webp = tmp / "snap.webp"
+        if not to_webp(src_jpg, out_webp):
+            print("WebP conversion failed.", file=sys.stderr)
+            sys.exit(1)
+
+        shutil.move(str(out_webp), str(snap_path))
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+    print(f"Updated {snap_path} ({snap_path.stat().st_size / 1024:.0f} KB)")
+
+
+def cmd_api(camera: str, url: str) -> None:
     now = datetime.now()
     ts = now.strftime("%H:%M")
     minutes = ts_to_minutes(ts)
@@ -102,7 +182,9 @@ def cmd_snap(camera: str, url: str) -> None:
     db_path = out_dir / "images.db"
 
     conn = open_db(db_path)
-    existing = conn.execute("SELECT 1 FROM frames WHERE timestamp = ?", (ts,)).fetchone()
+    existing = conn.execute(
+        "SELECT 1 FROM frames WHERE timestamp = ?", (ts,)
+    ).fetchone()
     if existing:
         print(f"Frame {ts} already in db, skipping.")
         conn.close()
@@ -111,14 +193,7 @@ def cmd_snap(camera: str, url: str) -> None:
     tmp = Path(tempfile.mkdtemp())
     try:
         src_jpg = tmp / "snap.jpg"
-        result = subprocess.run(
-            ["curl", "--connect-timeout", "2", "--retry", "4", "--retry-delay", "1",
-             "-s", "-S", "-f", "-o", str(src_jpg), url],
-            capture_output=True,
-        )
-        if result.returncode != 0:
-            print(f"curl failed: {result.stderr.decode().strip()}", file=sys.stderr)
-            sys.exit(1)
+        fetch_jpg(url, src_jpg)
 
         out_avif = tmp / "snap.avif"
         if not to_avif(src_jpg, out_avif):
@@ -157,7 +232,9 @@ def cmd_animation(camera: str) -> None:
         sys.exit(1)
 
     conn = sqlite3.connect(db_path)
-    rows = conn.execute("SELECT timestamp, ext, data FROM frames ORDER BY timestamp").fetchall()
+    rows = conn.execute(
+        "SELECT timestamp, ext, data FROM frames ORDER BY timestamp"
+    ).fetchall()
     conn.close()
 
     if not rows:
@@ -176,18 +253,41 @@ def cmd_animation(camera: str) -> None:
                 fl.write(f"file '{frame_path}'\n")
 
         base_cmd = [
-            "ffmpeg", "-loglevel", "error",
-            "-r", "12", "-f", "concat", "-safe", "0", "-i", str(file_list),
-            "-c:v", "libvpx-vp9", "-b:v", "0", "-crf", "38",
-            "-deadline", "good", "-cpu-used", "5", "-vf", "format=yuv420p",
+            "ffmpeg",
+            "-loglevel",
+            "error",
+            "-r",
+            "12",
+            "-f",
+            "concat",
+            "-safe",
+            "0",
+            "-i",
+            str(file_list),
+            "-c:v",
+            "libvpx-vp9",
+            "-b:v",
+            "0",
+            "-crf",
+            "38",
+            "-deadline",
+            "good",
+            "-cpu-used",
+            "5",
+            "-vf",
+            "format=yuv420p",
         ]
         subprocess.run(
             base_cmd + ["-pass", "1", "-an", "-f", "null", os.devnull],
-            check=True, capture_output=True, cwd=tmp,
+            check=True,
+            capture_output=True,
+            cwd=tmp,
         )
         subprocess.run(
             base_cmd + ["-pass", "2", "-an", str(webm_path)],
-            check=True, capture_output=True, cwd=tmp,
+            check=True,
+            capture_output=True,
+            cwd=tmp,
         )
     except subprocess.CalledProcessError as e:
         print(f"ffmpeg failed: {e.stderr.decode().strip()}", file=sys.stderr)
@@ -214,10 +314,18 @@ def main():
             print("Usage: image.py snap <camera> <url>", file=sys.stderr)
             sys.exit(1)
         cmd_snap(camera, rest[0])
+    elif mode == "api":
+        if not rest:
+            print("Usage: image.py api <camera> <url>", file=sys.stderr)
+            sys.exit(1)
+        cmd_api(camera, rest[0])
     elif mode == "animation":
         cmd_animation(camera)
     else:
-        print(f"Unknown mode: {mode!r}. Expected snap, thumbnail, or animation.", file=sys.stderr)
+        print(
+            f"Unknown mode: {mode!r}. Expected snap, api, or animation.",
+            file=sys.stderr,
+        )
         sys.exit(1)
 
 

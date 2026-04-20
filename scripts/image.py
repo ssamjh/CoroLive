@@ -18,10 +18,10 @@ Environment:
 
 Output layout:
   <BASE_DIR>/<camera>/snap.avif
-  <BASE_DIR>/<camera>/<YYYY>/<MM>/<DD>/images.db
-  <BASE_DIR>/<camera>/<YYYY>/<MM>/<DD>/index.json
-  <BASE_DIR>/<camera>/<YYYY>/<MM>/<DD>/thumbnail.avif
-  <BASE_DIR>/<camera>/<YYYY>/<MM>/<DD>/animation.webm
+  <BASE_DIR>/<camera>/archive/<YYYY>/<MM>/<DD>/images.db
+  <BASE_DIR>/<camera>/archive/<YYYY>/<MM>/<DD>/index.json
+  <BASE_DIR>/<camera>/archive/<YYYY>/<MM>/<DD>/thumbnail.avif
+  <BASE_DIR>/<camera>/archive/<YYYY>/<MM>/<DD>/animation.webm
 """
 
 import json
@@ -51,7 +51,7 @@ def check_dependencies():
 
 
 def day_dir(camera: str, now: datetime) -> Path:
-    return BASE_DIR / camera / f"{now.year}" / f"{now.month:02d}" / f"{now.day:02d}"
+    return BASE_DIR / camera / "archive" / f"{now.year}" / f"{now.month:02d}" / f"{now.day:02d}"
 
 
 def ts_to_minutes(ts: str) -> int:

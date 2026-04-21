@@ -229,7 +229,7 @@ def update_thumbnail(
     ts: str,
 ) -> None:
     thumb_path = out_dir / "thumbnail.avif"
-    if minutes < NOON_MINUTES:
+    if minutes <= NOON_MINUTES:
         thumb_path.write_bytes(current_data)
         print(f"Updated {thumb_path} ({len(current_data) / 1024:.0f} KB)")
     elif not thumb_path.exists():

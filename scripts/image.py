@@ -36,7 +36,7 @@ from pathlib import Path
 
 BASE_DIR = Path(os.environ.get("COROLIVE_BASE_DIR", "/var/www/corolive.nz/api"))
 
-NOON_MINUTES = 12 * 60
+NOON_MINUTES = 12 * 60 + 1
 
 
 def check_dependencies():

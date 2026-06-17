@@ -17,6 +17,9 @@ camera in `config/cameras.yaml`, it does:
 The schedule is just constants at the top of `corolive.py`. The camera list lives
 in `config/cameras.yaml`.
 
+`animate` runs in a background thread so the slow nightly encode never blocks the
+per-minute `snap`/`archive` jobs.
+
 ## Layout
 
 ```

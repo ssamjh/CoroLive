@@ -27,6 +27,7 @@ import sqlite3
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 from datetime import datetime
 from pathlib import Path
@@ -222,6 +223,16 @@ def animate(name):
 # ---------------------------------------------------------------------------
 # The loop.
 # ---------------------------------------------------------------------------
+def run_animate(name):
+    """Encode in a background thread so the slow ffmpeg pass never blocks the
+    per-minute snaps/archives. The thread just waits on the ffmpeg subprocess."""
+    try:
+        animate(name)
+        print(f"[{name}] animation done", flush=True)
+    except Exception as e:
+        print(f"[{name}] animation error: {e}", flush=True)
+
+
 def run_minute(now):
     """Do everything that should happen this minute, for every camera."""
     for cam in load_cameras():
@@ -231,7 +242,7 @@ def run_minute(now):
             if now.minute % ARCHIVE_EVERY_MIN == 0:
                 archive(name, url)
             if now.strftime("%H:%M") == cam.get("animation_at"):
-                animate(name)
+                threading.Thread(target=run_animate, args=(name,), daemon=True).start()
         except Exception as e:
             print(f"{now:%H:%M} [{name}] error: {e}", flush=True)
 

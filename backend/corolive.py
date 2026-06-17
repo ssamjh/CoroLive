@@ -8,7 +8,11 @@ encodes a nightly timelapse. Replaces the old cron + scripts/image.py setup.
 The loop wakes once a minute and, for each camera, does:
   snap      every minute            — save a fresh live frame for the frontend
   archive   every 2 min, 05:00–22:00 — store a frame in today's database
-  animate   once, at animation_at    — encode the day's timelapse
+
+Once a day, at ANIMATE_AT, every camera's timelapse is encoded one after
+another in a background thread — each runs in its own thread that we monitor
+to completion before starting the next, so the heavy ffmpeg passes never
+overlap and never block the per-minute snaps.
 
 Run:
   python corolive.py                  # the scheduling loop (what the container runs)
@@ -44,6 +48,8 @@ ARCHIVE_EVERY_MIN = 2     # archive a frame every N minutes
 ARCHIVE_START_HOUR = 5    # archive only between these hours (inclusive)
 ARCHIVE_END_HOUR = 22
 THUMBNAIL_NOON = 12 * 60 + 1   # minutes-since-midnight the thumbnail aims for
+ANIMATE_AT = os.environ.get("COROLIVE_ANIMATE_AT", "22:10")  # encode all timelapses at this local time
+ANIMATE_POLL_SEC = 30     # how often to log progress while an encode runs
 
 
 def load_cameras():
@@ -224,13 +230,32 @@ def animate(name):
 # The loop.
 # ---------------------------------------------------------------------------
 def run_animate(name):
-    """Encode in a background thread so the slow ffmpeg pass never blocks the
-    per-minute snaps/archives. The thread just waits on the ffmpeg subprocess."""
+    """Encode one camera's timelapse. Runs in its own thread so we can monitor
+    it to completion; the thread just waits on the ffmpeg subprocess."""
     try:
         animate(name)
         print(f"[{name}] animation done", flush=True)
     except Exception as e:
         print(f"[{name}] animation error: {e}", flush=True)
+
+
+def run_all_animations():
+    """Encode every camera's timelapse one after another. Each runs in its own
+    thread that we monitor to completion before starting the next, so the heavy
+    ffmpeg passes never overlap. Runs in a background thread itself, so it never
+    blocks the per-minute snaps/archives."""
+    for cam in load_cameras():
+        name = cam["name"]
+        start = datetime.now()
+        t = threading.Thread(target=run_animate, args=(name,), daemon=True)
+        t.start()
+        print(f"[{name}] animation started", flush=True)
+        while t.is_alive():
+            t.join(timeout=ANIMATE_POLL_SEC)
+            if t.is_alive():
+                elapsed = int((datetime.now() - start).total_seconds())
+                print(f"[{name}] still encoding… {elapsed}s", flush=True)
+    print("all animations done", flush=True)
 
 
 def run_minute(now):
@@ -241,10 +266,11 @@ def run_minute(now):
             snap(name, url)
             if now.minute % ARCHIVE_EVERY_MIN == 0:
                 archive(name, url)
-            if now.strftime("%H:%M") == cam.get("animation_at"):
-                threading.Thread(target=run_animate, args=(name,), daemon=True).start()
         except Exception as e:
             print(f"{now:%H:%M} [{name}] error: {e}", flush=True)
+    # once a day, encode every camera's timelapse back-to-back in the background
+    if now.strftime("%H:%M") == ANIMATE_AT:
+        threading.Thread(target=run_all_animations, daemon=True).start()
 
 
 def loop():

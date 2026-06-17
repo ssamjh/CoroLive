@@ -1,15 +1,15 @@
 # Copy to cameras.yaml (gitignored) and fill in real URLs + credentials.
-# animation_at is the local time (HH:MM) the day's timelapse is encoded.
+#
+# All cameras' timelapses are encoded once a day at ANIMATE_AT (default 22:10),
+# one after another. Set the time with the COROLIVE_ANIMATE_AT env var (HH:MM).
+# Per-camera animation_at is no longer used.
 
 cameras:
   - name: whitianga
     url: "http://username:password@127.0.0.1/GetSnapshot"
-    animation_at: "22:10"
 
   - name: whangamata
     url: "http://username:password@127.0.0.1/GetSnapshot"
-    animation_at: "22:16"
 
   - name: thames
     url: "http://username:password@127.0.0.1/GetSnapshot"
-    animation_at: "22:21"

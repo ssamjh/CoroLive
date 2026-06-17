@@ -1,0 +1,10 @@
+services:
+  corolive-backend:
+    build: .
+    container_name: corolive-backend
+    restart: unless-stopped
+    environment:
+      TZ: Pacific/Auckland          # capture times use this timezone
+    volumes:
+      - ./data:/data                # all captured data lives here
+      - ./config:/config:ro         # cameras.yaml (read-only)

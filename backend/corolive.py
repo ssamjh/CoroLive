@@ -258,16 +258,30 @@ def run_all_animations():
     print("all animations done", flush=True)
 
 
+def run_camera_minute(name, url, now):
+    """Grab this minute's frame(s) for one camera: a live snap, plus an archive
+    frame on the archive cadence."""
+    try:
+        snap(name, url)
+        if now.minute % ARCHIVE_EVERY_MIN == 0:
+            archive(name, url)
+    except Exception as e:
+        print(f"{now:%H:%M} [{name}] error: {e}", flush=True)
+
+
 def run_minute(now):
-    """Do everything that should happen this minute, for every camera."""
+    """Do everything that should happen this minute, for every camera. Each
+    camera's image grabbing runs in its own thread so they happen at once and a
+    slow camera never delays the others."""
+    threads = []
     for cam in load_cameras():
-        name, url = cam["name"], cam["url"]
-        try:
-            snap(name, url)
-            if now.minute % ARCHIVE_EVERY_MIN == 0:
-                archive(name, url)
-        except Exception as e:
-            print(f"{now:%H:%M} [{name}] error: {e}", flush=True)
+        t = threading.Thread(
+            target=run_camera_minute, args=(cam["name"], cam["url"], now), daemon=True
+        )
+        t.start()
+        threads.append(t)
+    for t in threads:
+        t.join()
     # once a day, encode every camera's timelapse back-to-back in the background
     if now.strftime("%H:%M") == ANIMATE_AT:
         threading.Thread(target=run_all_animations, daemon=True).start()

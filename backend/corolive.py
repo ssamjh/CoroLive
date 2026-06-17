@@ -139,24 +139,23 @@ def update_thumbnail(conn, out_dir, current_data, minutes):
 # ---------------------------------------------------------------------------
 # The three jobs.
 # ---------------------------------------------------------------------------
-def snap(name, url):
-    """Save a fresh live frame: <camera>/snap.webp"""
+def save_snap(name, jpg):
+    """Encode an already-fetched JPEG into the live frame: <camera>/snap.webp"""
     out = BASE_DIR / name / "snap.webp"
     out.parent.mkdir(parents=True, exist_ok=True)
     tmp = Path(tempfile.mkdtemp())
     try:
-        jpg = tmp / "in.jpg"
         webp = tmp / "out.webp"
-        fetch_jpg(url, jpg)
         to_webp(jpg, webp)
         shutil.move(str(webp), str(out))
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 
 
-def archive(name, url):
-    """Store one frame in today's database, and refresh index.json + thumbnail.
-    Does nothing outside the archive window or if this minute is already stored."""
+def save_archive(name, jpg):
+    """Store an already-fetched JPEG in today's database, and refresh
+    index.json + thumbnail. Does nothing outside the archive window or if this
+    minute is already stored."""
     now = datetime.now()
     minutes = now.hour * 60 + now.minute
     if not (ARCHIVE_START_HOUR * 60 <= minutes <= ARCHIVE_END_HOUR * 60):
@@ -171,9 +170,7 @@ def archive(name, url):
 
         tmp = Path(tempfile.mkdtemp())
         try:
-            jpg = tmp / "in.jpg"
             avif = tmp / "out.avif"
-            fetch_jpg(url, jpg)
             to_avif(jpg, avif)
             data = avif.read_bytes()
         finally:
@@ -188,6 +185,28 @@ def archive(name, url):
         update_thumbnail(conn, out_dir, data, minutes)
     finally:
         conn.close()
+
+
+def snap(name, url):
+    """Fetch a frame and save it as the live <camera>/snap.webp."""
+    tmp = Path(tempfile.mkdtemp())
+    try:
+        jpg = tmp / "in.jpg"
+        fetch_jpg(url, jpg)
+        save_snap(name, jpg)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+def archive(name, url):
+    """Fetch a frame and store it in today's database."""
+    tmp = Path(tempfile.mkdtemp())
+    try:
+        jpg = tmp / "in.jpg"
+        fetch_jpg(url, jpg)
+        save_archive(name, jpg)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
 
 
 def animate(name):
@@ -259,14 +278,19 @@ def run_all_animations():
 
 
 def run_camera_minute(name, url, now):
-    """Grab this minute's frame(s) for one camera: a live snap, plus an archive
-    frame on the archive cadence."""
+    """Grab this minute's frame for one camera with a single fetch: encode it as
+    the live snap, and on the archive cadence also store it in the database."""
+    tmp = Path(tempfile.mkdtemp())
     try:
-        snap(name, url)
+        jpg = tmp / "in.jpg"
+        fetch_jpg(url, jpg)
+        save_snap(name, jpg)
         if now.minute % ARCHIVE_EVERY_MIN == 0:
-            archive(name, url)
+            save_archive(name, jpg)
     except Exception as e:
         print(f"{now:%H:%M} [{name}] error: {e}", flush=True)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
 
 
 def run_minute(now):
@@ -289,12 +313,18 @@ def run_minute(now):
 
 def loop():
     print(f"CoroLive backend started — data: {BASE_DIR}, config: {CONFIG_PATH}", flush=True)
+    # grab a live frame straight away so the frontend isn't blank until the next
+    # minute; archives stay on their aligned schedule below.
+    for cam in load_cameras():
+        threading.Thread(
+            target=snap, args=(cam["name"], cam["url"]), daemon=True
+        ).start()
     while True:
+        # wait for the top of the next minute, then do that minute's work — so a
+        # mid-minute start doesn't grab an archive frame off-schedule.
         now = datetime.now()
-        run_minute(now)
-        # sleep until the top of the next minute
-        slept = datetime.now()
-        time.sleep(max(1, 60 - slept.second - slept.microsecond / 1e6))
+        time.sleep(max(1, 60 - now.second - now.microsecond / 1e6))
+        run_minute(datetime.now())
 
 
 # ---------------------------------------------------------------------------

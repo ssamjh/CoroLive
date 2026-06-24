@@ -1,4 +1,5 @@
 <head>
+    <?php require 'streams.php'; ?>
     <?php $cameraCapitalized = ucfirst($camera); ?>
     <?php $pageName = "$cameraCapitalized - CoroLive"; ?>
 
@@ -21,7 +22,7 @@
 
     <script>
         var config = {
-            source: 'https://api.corolive.nz/hls/<?php echo $camera; ?>_high.m3u8',
+            source: '<?php echo streamM3u8($camera); ?>',
             poster: 'https://api.corolive.nz/<?php echo $camera; ?>/snap.webp?rand=<?php echo rand(); ?>',
             parentId: '#player',
             position: 'bottom-right',

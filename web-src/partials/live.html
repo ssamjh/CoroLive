@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+
+<head>
+<!--include head-->
+<!--include streams-->
+</head>
+
+<body>
+<!--include navbar-->
+
+    <h3 class="text-center">{{Camera}} Live Stream</h3>
+
+    <br>
+
+<!--include player-->
+
+    <script>
+        var camera = '{{camera}}';
+
+        var player = new window.Clappr.Player({
+            source: m3u8(camera),
+            poster: snap(camera) + '?rand=' + Math.random(),
+            parentId: '#player',
+            position: 'bottom-right',
+            mute: true,
+            autoPlay: true,
+            actualLiveTime: true,
+            hideVolumeBar: true,
+            width: '100%',
+            height: '100%',
+            events: {
+                onReady: function () {
+                    var plugin = this.getPlugin('click_to_pause');
+                    plugin && plugin.disable();
+                },
+            },
+        });
+    </script>
+
+<!--include footer-->
+</body>
+
+</html>

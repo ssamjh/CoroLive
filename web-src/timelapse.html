@@ -1,108 +1,93 @@
+<!--vars
+pageName: Timelapse - CoroLive
+ogUrl: https://corolive.nz/timelapse
+ogImage: https://corolive.nz/img/corolive512.webp
+-->
 <!doctype html>
 <html lang="en" data-bs-theme="auto">
 
-<?php
-$startDates = [
-    'thames' => '2021-05-06',
-    'whangamata' => '2021-03-17',
-    'whitianga' => '2019-03-17',
-];
-
-$allowedCameras = ['whitianga', 'whangamata', 'thames'];
-$camera = $_GET['camera'] ?? null;
-
-if (!in_array($camera, $allowedCameras)) {
-    header("Location: /");
-    exit;
-}
-
-$startDate = $startDates[$camera] ?? null;
-
-$currentTime = new DateTime("now", new DateTimeZone("Pacific/Auckland"));
-$cutoffTime = DateTime::createFromFormat("H:i", "06:00", new DateTimeZone("Pacific/Auckland"));
-
-$maxDate = new DateTime("now", new DateTimeZone('Pacific/Auckland'));
-if ($maxDate->format('H:i') < '06:05') {
-    $maxDate->modify('-1 day');
-}
-
-// Parse date(s) — supports single YYYY-MM-DD or range YYYY-MM-DD_YYYY-MM-DD
-$dates = [];
-if (isset($_GET["date"])) {
-    $rawDate = $_GET["date"];
-    $parts = explode('_', $rawDate);
-    $parts = array_slice($parts, 0, 2);
-
-    if (count($parts) === 2) {
-        // Date range — fill in every day between start and end (max 7)
-        $startD = DateTime::createFromFormat("Y-m-d", trim($parts[0]), new DateTimeZone("Pacific/Auckland"));
-        $endD   = DateTime::createFromFormat("Y-m-d", trim($parts[1]), new DateTimeZone("Pacific/Auckland"));
-        if ($startD && $endD) {
-            if ($startD > $endD) { [$startD, $endD] = [$endD, $startD]; }
-            $cur = clone $startD;
-            $dayCount = 0;
-            while ($cur <= $endD && $dayCount < 7) {
-                $dStr = $cur->format('Y-m-d');
-                if ($dStr >= $startDate && $dStr <= $maxDate->format('Y-m-d')) {
-                    $dates[] = clone $cur;
-                }
-                $cur->modify('+1 day');
-                $dayCount++;
-            }
-        }
-    } else {
-        // Single date
-        $d = DateTime::createFromFormat("Y-m-d", trim($parts[0]), new DateTimeZone("Pacific/Auckland"));
-        if ($d) {
-            $dStr = $d->format('Y-m-d');
-            if ($dStr >= $startDate && $dStr <= $maxDate->format('Y-m-d')) {
-                $dates[] = $d;
-            }
-        }
-    }
-}
-
-if (empty($dates)) {
-    if ($currentTime < $cutoffTime) {
-        $dates = [new DateTime("1 day ago", new DateTimeZone("Pacific/Auckland"))];
-    } else {
-        $dates = [new DateTime("now", new DateTimeZone("Pacific/Auckland"))];
-    }
-}
-
-$date = $dates[0];
-
-// Build DB source list for JS
-$dbSources = [];
-foreach ($dates as $d) {
-    $basePath = "https://api.corolive.nz/{$camera}/archive/{$d->format('Y/m/d')}";
-    $dbSources[] = ['url' => "{$basePath}/images.db", 'date' => $d->format('Y-m-d')];
-}
-
-$firstBasePath = "https://api.corolive.nz/{$camera}/archive/{$dates[0]->format('Y/m/d')}";
-$camPoster     = "{$firstBasePath}/thumbnail.avif";
-$camOgURL      = $camPoster;
-
-$cameraCapitalized = ucfirst($camera);
-$pageName = "$cameraCapitalized Timelapse - CoroLive";
-
-// Form state
-$formDateStart = $dates[0]->format('Y-m-d');
-$formDateEnd   = count($dates) > 1 ? end($dates)->format('Y-m-d') : $formDateStart;
-$isRange       = count($dates) > 1;
-?>
-
 <head>
-    <?php require 'head.php'; ?>
-    <meta property="og:image" content="<?php echo $camOgURL; ?>" />
+<!--include head-->
+<!--include streams-->
+    <script>
+        // ---- Date selection -------------------------------------------------
+        // All dates are plain Y-m-d calendar strings in Pacific/Auckland.
+
+        var MAX_RANGE_DAYS = 7;
+
+        // Current NZ date + HH:MM, via Intl - no date library needed.
+        function nzNow() {
+            var p = {};
+            new Intl.DateTimeFormat('en-GB', {
+                timeZone: 'Pacific/Auckland',
+                year: 'numeric', month: '2-digit', day: '2-digit',
+                hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+            }).formatToParts(new Date()).forEach(function (x) { p[x.type] = x.value; });
+            return { date: p.year + '-' + p.month + '-' + p.day, time: p.hour + ':' + p.minute };
+        }
+
+        // Calendar-day arithmetic on Y-m-d strings (UTC avoids any DST drift).
+        function addDays(date, n) {
+            var t = new Date(date + 'T00:00:00Z');
+            t.setUTCDate(t.getUTCDate() + n);
+            return t.toISOString().slice(0, 10);
+        }
+
+        function isValidDate(s) {
+            return /^\d{4}-\d{2}-\d{2}$/.test(s) && addDays(s, 0) === s;
+        }
+
+        var camera = queryCamera();
+        if (!camera) { location.replace('/'); }
+
+        var NOW = nzNow();
+        var START_DATE = camera ? CAMERAS[camera].start : '';
+
+        // The archive for "today" isn't written until just after 06:00, so
+        // before 06:05 the newest selectable day is yesterday.
+        var MAX_DATE = NOW.time < '06:05' ? addDays(NOW.date, -1) : NOW.date;
+        var DEFAULT_DATE = NOW.time < '06:00' ? addDays(NOW.date, -1) : NOW.date;
+
+        function inRange(d) { return d >= START_DATE && d <= MAX_DATE; }
+
+        // ?date=YYYY-MM-DD  or  ?date=YYYY-MM-DD_YYYY-MM-DD (capped at 7 days)
+        function selectedDates() {
+            var raw = new URLSearchParams(location.search).get('date');
+            var dates = [];
+
+            if (raw) {
+                var parts = raw.split('_').slice(0, 2).map(function (s) { return s.trim(); });
+
+                if (parts.length === 2 && isValidDate(parts[0]) && isValidDate(parts[1])) {
+                    var from = parts[0], to = parts[1];
+                    if (from > to) { var swap = from; from = to; to = swap; }
+                    for (var cur = from, n = 0; cur <= to && n < MAX_RANGE_DAYS; cur = addDays(cur, 1), n++) {
+                        if (inRange(cur)) { dates.push(cur); }
+                    }
+                } else if (isValidDate(parts[0]) && inRange(parts[0])) {
+                    dates.push(parts[0]);
+                }
+            }
+
+            return dates.length ? dates : [DEFAULT_DATE];
+        }
+
+        var DATES = camera ? selectedDates() : [];
+
+        function archiveBase(date) {
+            return API + '/' + camera + '/archive/' + date.replace(/-/g, '/');
+        }
+
+        var DB_SOURCES = DATES.map(function (d) {
+            return { url: archiveBase(d) + '/images.db', date: d };
+        });
+    </script>
 </head>
 
 <body>
-    <?php require 'navbar.php'; ?>
+<!--include navbar-->
 
-    <h3 class="text-center">
-        <?php echo $cameraCapitalized; ?> Timelapse
-    </h3>
+    <h3 class="text-center" id="heading"></h3>
 
     <br>
 
@@ -140,22 +125,22 @@ $isRange       = count($dates) > 1;
                 <div id="tlContainer">
                     <div class="ratio ratio-16x9" style="background:#000;">
                         <div>
-                            <img id="tlFrame" src="<?php echo $camPoster; ?>" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+                            <img id="tlFrame" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
                             <div id="tlTime" style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,.55);color:#fff;padding:4px 10px;border-radius:4px;font-size:1.1rem;pointer-events:none;display:none;"></div>
                             <div id="tlControls" style="position:absolute;bottom:0;left:0;right:0;padding:6px 10px 8px;background:rgba(0,0,0,.55);opacity:0;">
                                 <input id="tlScrubber" type="range" class="form-range mb-1" value="0" min="0" step="1" disabled>
                                 <div class="d-flex align-items-center justify-content-center gap-2 flex-wrap">
-                                    <button id="tlPrev" class="btn btn-outline-light btn-sm" disabled title="Previous frame (←)"><i class="fa fa-fw fa-backward-step"></i></button>
+                                    <button id="tlPrev" class="btn btn-outline-light btn-sm" disabled title="Previous frame (&larr;)"><i class="fa fa-fw fa-backward-step"></i></button>
                                     <button id="tlPlay" class="btn btn-outline-light btn-sm" disabled><i class="fa fa-fw fa-play"></i></button>
-                                    <button id="tlNext" class="btn btn-outline-light btn-sm" disabled title="Next frame (→)"><i class="fa fa-fw fa-forward-step"></i></button>
+                                    <button id="tlNext" class="btn btn-outline-light btn-sm" disabled title="Next frame (&rarr;)"><i class="fa fa-fw fa-forward-step"></i></button>
                                     <span class="small text-white">Speed:</span>
                                     <select id="tlSpeed" class="form-select form-select-sm text-white" style="width:auto;background-color:transparent;border-color:rgba(255,255,255,.4);" disabled>
-                                        <option value="0.25">0.25×</option>
-                                        <option value="0.5">0.5×</option>
-                                        <option value="1" selected>1×</option>
-                                        <option value="2">2×</option>
-                                        <option value="4">4×</option>
-                                        <option value="8">8×</option>
+                                        <option value="0.25">0.25&times;</option>
+                                        <option value="0.5">0.5&times;</option>
+                                        <option value="1" selected>1&times;</option>
+                                        <option value="2">2&times;</option>
+                                        <option value="4">4&times;</option>
+                                        <option value="8">8&times;</option>
                                     </select>
                                     <input id="tlTimeJump" type="time" step="120" class="form-control form-control-sm" disabled title="Jump to time">
                                     <button id="tlFullscreen" class="btn btn-outline-light btn-sm" disabled><i class="fa fa-fw fa-expand"></i></button>
@@ -177,7 +162,11 @@ $isRange       = count($dates) > 1;
 
     <script>
     (function () {
-        var DB_SOURCES = <?php echo json_encode($dbSources); ?>;
+        if (!camera) return;
+
+        document.title = CAMERAS[camera].name + ' Timelapse - CoroLive';
+        document.getElementById('heading').textContent = CAMERAS[camera].name + ' Timelapse';
+
         var MULTI_DAY = DB_SOURCES.length > 1;
         var FPS = 12;
 
@@ -196,6 +185,8 @@ $isRange       = count($dates) > 1;
         var timeJumpEl    = document.getElementById('tlTimeJump');
         var container     = document.getElementById('tlContainer');
         var controls      = document.getElementById('tlControls');
+
+        frameEl.src = archiveBase(DATES[0]) + '/thumbnail.avif';
 
         // Hide time jump for multi-day (per-day time selection doesn't make sense across days)
         if (MULTI_DAY) { timeJumpEl.style.display = 'none'; }
@@ -337,10 +328,10 @@ $isRange       = count($dates) > 1;
             function next() {
                 if (idx >= DB_SOURCES.length) { finishLoading(); return; }
                 var source = DB_SOURCES[idx];
-                var dayTag = DB_SOURCES.length > 1 ? 'Day ' + (idx + 1) + ' of ' + DB_SOURCES.length + ' \u2013 ' : '';
+                var dayTag = DB_SOURCES.length > 1 ? 'Day ' + (idx + 1) + ' of ' + DB_SOURCES.length + ' – ' : '';
                 progressLabel.textContent = DB_SOURCES.length > 1
-                    ? 'Loading day ' + (idx + 1) + ' of ' + DB_SOURCES.length + '\u2026'
-                    : 'Loading frames\u2026';
+                    ? 'Loading day ' + (idx + 1) + ' of ' + DB_SOURCES.length + '…'
+                    : 'Loading frames…';
                 bar.style.width = '0%';
                 bytesEl.textContent = '';
 
@@ -415,26 +406,19 @@ $isRange       = count($dates) > 1;
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-xxl-8">
-                <form id="dateForm" class="text-center" action="timelapse">
-                    <input type="hidden" name="camera" value="<?php echo $camera; ?>">
+                <form id="dateForm" class="text-center" action="/timelapse">
                     <div class="d-flex flex-wrap gap-3 justify-content-center align-items-end mb-2">
                         <div>
-                            <label class="form-label mb-1" id="dateStartLabel" for="dateStart"><?php echo $isRange ? 'Start date' : 'Date'; ?></label>
-                            <input type="date" id="dateStart" class="form-control"
-                                min="<?php echo $startDate; ?>"
-                                max="<?php echo $maxDate->format('Y-m-d'); ?>"
-                                value="<?php echo $formDateStart; ?>" required>
+                            <label class="form-label mb-1" id="dateStartLabel" for="dateStart">Date</label>
+                            <input type="date" id="dateStart" class="form-control" required>
                         </div>
-                        <div id="dateEndWrap"<?php echo $isRange ? '' : ' style="display:none"'; ?>>
+                        <div id="dateEndWrap" style="display:none">
                             <label class="form-label mb-1" for="dateEnd">End date</label>
-                            <input type="date" id="dateEnd" class="form-control"
-                                min="<?php echo $startDate; ?>"
-                                max="<?php echo $maxDate->format('Y-m-d'); ?>"
-                                value="<?php echo $formDateEnd; ?>">
+                            <input type="date" id="dateEnd" class="form-control">
                         </div>
                     </div>
                     <div class="form-check d-inline-block mb-2">
-                        <input class="form-check-input" type="checkbox" id="rangeToggle"<?php echo $isRange ? ' checked' : ''; ?>>
+                        <input class="form-check-input" type="checkbox" id="rangeToggle">
                         <label class="form-check-label" for="rangeToggle">Date range</label>
                     </div>
                     <p>
@@ -447,12 +431,27 @@ $isRange       = count($dates) > 1;
 
     <script>
     (function () {
-        var rangeToggle  = document.getElementById('rangeToggle');
-        var dateEndWrap  = document.getElementById('dateEndWrap');
-        var dateStartEl  = document.getElementById('dateStart');
-        var dateEndEl    = document.getElementById('dateEnd');
-        var form         = document.getElementById('dateForm');
+        if (!camera) return;
+
+        var rangeToggle    = document.getElementById('rangeToggle');
+        var dateEndWrap    = document.getElementById('dateEndWrap');
+        var dateStartEl    = document.getElementById('dateStart');
+        var dateEndEl      = document.getElementById('dateEnd');
+        var form           = document.getElementById('dateForm');
         var dateStartLabel = document.getElementById('dateStartLabel');
+
+        // Initial form state, from the dates resolved above.
+        [dateStartEl, dateEndEl].forEach(function (el) {
+            el.min = START_DATE;
+            el.max = MAX_DATE;
+        });
+        dateStartEl.value = DATES[0];
+        dateEndEl.value   = DATES[DATES.length - 1];
+        if (DATES.length > 1) {
+            rangeToggle.checked = true;
+            dateEndWrap.style.display = '';
+            dateStartLabel.textContent = 'Start date';
+        }
 
         rangeToggle.addEventListener('change', function () {
             dateEndWrap.style.display = this.checked ? '' : 'none';
@@ -474,12 +473,12 @@ $isRange       = count($dates) > 1;
             if (rangeToggle.checked && dateEndEl.value && dateEndEl.value !== start) {
                 dateParam = start + '_' + dateEndEl.value;
             }
-            window.location.href = 'timelapse?camera=<?php echo urlencode($camera); ?>&date=' + dateParam;
+            window.location.href = '/timelapse?camera=' + encodeURIComponent(camera) + '&date=' + dateParam;
         });
     }());
     </script>
 
-    <?php require 'footer.php'; ?>
+<!--include footer-->
 </body>
 
 </html>

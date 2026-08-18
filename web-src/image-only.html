@@ -1,0 +1,51 @@
+<!--vars
+pageName: Image Only - CoroLive
+ogUrl: https://corolive.nz/image-only
+ogImage: https://corolive.nz/img/corolive512.webp
+-->
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+
+<head>
+<!--include head-->
+<!--include streams-->
+    <script>
+        // Reject unknown cameras before the body paints.
+        var camera = queryCamera();
+        if (!camera) { location.replace('/'); }
+        else { document.title = CAMERAS[camera].name + ' Image Only - CoroLive'; }
+    </script>
+</head>
+
+<body>
+<!--include navbar-->
+
+    <h3 class="text-center" id="heading"></h3>
+
+    <br>
+
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-xxl-8">
+                <div class="ratio ratio-16x9">
+                    <img id="image-only">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        if (camera) {
+            document.getElementById('heading').textContent = CAMERAS[camera].name + ' Image Only';
+
+            var imageEl = document.getElementById('image-only');
+            function refresh() { imageEl.src = snap(camera) + '?=' + Math.random(); }
+            refresh();
+            setInterval(refresh, 15000);
+        }
+    </script>
+
+<!--include footer-->
+</body>
+
+</html>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+
+  <url>
+    <loc>https://corolive.nz/</loc>
+    <priority>1.00</priority>
+  </url>
+  <url>
+    <loc>https://corolive.nz/whitianga</loc>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://corolive.nz/timelapse?camera=whitianga</loc>
+    <priority>0.50</priority>
+  </url>
+  <url>
+    <loc>https://corolive.nz/image-only?camera=whitianga</loc>
+    <priority>0.10</priority>
+  </url>
+  <url>
+    <loc>https://corolive.nz/whangamata</loc>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://corolive.nz/timelapse?camera=whangamata</loc>
+    <priority>0.50</priority>
+  </url>
+  <url>
+    <loc>https://corolive.nz/image-only?camera=whangamata</loc>
+    <priority>0.10</priority>
+  </url>
+  <url>
+    <loc>https://corolive.nz/thames</loc>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://corolive.nz/timelapse?camera=thames</loc>
+    <priority>0.50</priority>
+  </url>
+  <url>
+    <loc>https://corolive.nz/image-only?camera=thames</loc>
+    <priority>0.10</priority>
+  </url>
+  <url>
+    <loc>https://corolive.nz/embedding</loc>
+    <priority>0.05</priority>
+  </url>
+  <url>
+    <loc>https://corolive.nz/embed</loc>
+    <priority>0</priority>
+  </url>
+
+</urlset>

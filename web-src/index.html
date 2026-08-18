@@ -1,0 +1,80 @@
+<!--vars
+pageName: CoroLive - The Coromandel's Live Webcam Network
+ogUrl: https://corolive.nz/
+ogImage: https://corolive.nz/img/corolive512.webp
+-->
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+
+<head>
+<!--include head-->
+<!--include streams-->
+</head>
+
+<body>
+<!--include navbar-->
+
+    <h2 class="text-center">Pick your view!</h2>
+
+    <br>
+
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-sm-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <a href="/whitianga"><img id="whitianga-thumbnail"
+                                src="https://api.corolive.nz/whitianga/snap.webp" draggable="false"
+                                class="card-img-top" alt="Whitianga picker image"></a>
+                        <h5 class="card-title text-center">Whitianga</h5>
+                        <div class="center">
+                            <a href="/whitianga" class="btn btn-primary">Live</a>
+                            <a href="/timelapse?camera=whitianga" class="btn btn-secondary">Timelapse</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <a href="/whangamata"><img id="whangamata-thumbnail"
+                                src="https://api.corolive.nz/whangamata/snap.webp" draggable="false"
+                                class="card-img-top" alt="Whangamata picker image"></a>
+                        <h5 class="card-title text-center">Whangamata</h5>
+                        <div class="center">
+                            <a href="/whangamata" class="btn btn-primary">Live</a>
+                            <a href="/timelapse?camera=whangamata" class="btn btn-secondary">Timelapse</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <a href="/thames"><img id="thames-thumbnail"
+                                src="https://api.corolive.nz/thames/snap.webp" draggable="false"
+                                class="card-img-top" alt="Thames picker image"></a>
+                        <h5 class="card-title text-center">Thames</h5>
+                        <div class="center">
+                            <a href="/thames" class="btn btn-primary">Live</a>
+                            <a href="/timelapse?camera=thames" class="btn btn-secondary">Timelapse</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        setInterval(function () {
+            Object.keys(CAMERAS).forEach(function (id) {
+                document.getElementById(id + '-thumbnail').src = snap(id) + '?rand=' + Math.random();
+            });
+        }, 15000);
+    </script>
+
+<!--include footer-->
+
+</body>
+
+</html>

@@ -1,0 +1,32 @@
+<!--include streams-->
+<!--include player-->
+
+<script>
+    // NOTE: deliberately a bare fragment - no doctype, no Bootstrap CSS. Third-party
+    // iframes rely on this quirks-mode layout, so adding either would resize the
+    // player on sites we don't control. Leave it as-is.
+    var camera = queryCamera();
+
+    if (camera) {
+        var player = new window.Clappr.Player({
+            source: m3u8(camera),
+            poster: snap(camera) + '?rand=' + Math.random(),
+            watermark: 'https://corolive.nz/img/watermark.webp',
+            watermarkLink: 'https://corolive.nz',
+            parentId: '#player',
+            position: 'bottom-right',
+            mute: true,
+            autoPlay: true,
+            actualLiveTime: true,
+            hideVolumeBar: true,
+            width: '100%',
+            height: '100%',
+            events: {
+                onReady: function () {
+                    var plugin = this.getPlugin('click_to_pause');
+                    plugin && plugin.disable();
+                },
+            },
+        });
+    }
+</script>

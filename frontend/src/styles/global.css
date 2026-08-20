@@ -1,0 +1,117 @@
+@import 'tailwindcss';
+
+/* ---------------------------------------------------------------------------
+   Semantic surface tokens.
+
+   These are plain CSS variables so they can flip with prefers-color-scheme,
+   then registered in @theme below so Tailwind emits `bg-surface`, `text-muted`
+   etc. Automatic light/dark is the only mode - it replaces the old
+   data-bs-theme="auto" attribute plus libs/bootstrap-auto-colour.js.
+--------------------------------------------------------------------------- */
+:root {
+  --page: #f6f8fb;
+  --surface: #ffffff;
+  --surface-2: #eef2f7;
+  --edge: #e2e8f0;
+  --ink: #0f172a;
+  --muted: #5a677d;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page: #0a1018;
+    --surface: #121b27;
+    --surface-2: #18232f;
+    --edge: #26323f;
+    --ink: #e9eef5;
+    --muted: #94a5b8;
+  }
+}
+
+@theme {
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system,
+    'Segoe UI', Roboto, sans-serif;
+
+  /* Signature cyan. --color-brand-500 is Bootstrap's old $info (#0dcaf0),
+     kept exactly so the site's identity carries over unchanged. */
+  --color-brand-50: #ecfdff;
+  --color-brand-100: #cff8fe;
+  --color-brand-200: #a5f0fc;
+  --color-brand-300: #67e3f9;
+  --color-brand-400: #22ccee;
+  --color-brand-500: #0dcaf0;
+  --color-brand-600: #0b9fbe;
+  --color-brand-700: #107f9b;
+  --color-brand-800: #17677e;
+  --color-brand-900: #16556a;
+  --color-brand-950: #083949;
+
+  --color-page: var(--page);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-edge: var(--edge);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--page);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Headings carry the type personality: tight tracking, heavier weight. */
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand-500);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* The site's only button shapes. Tailwind v4 can't @apply a custom class, so
+     the shared base is a grouped selector rather than a composed .btn. */
+  .btn,
+  .btn-primary,
+  .btn-ghost,
+  .btn-glass {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2
+           text-sm font-semibold transition-colors duration-150
+           disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply bg-brand-500 text-brand-950 hover:bg-brand-400 active:bg-brand-600;
+  }
+
+  .btn-ghost {
+    @apply border border-edge bg-surface text-ink hover:bg-surface-2;
+  }
+
+  /* Dark-on-video control, used by the timelapse player chrome. */
+  .btn-glass {
+    @apply border border-white/25 bg-white/5 px-2.5 py-1.5 text-white
+           hover:bg-white/15 active:bg-white/25;
+  }
+
+  .card {
+    @apply rounded-2xl border border-edge bg-surface;
+  }
+
+  .field {
+    @apply w-full rounded-lg border border-edge bg-surface px-3 py-2 text-sm
+           text-ink transition-colors focus:border-brand-500 focus:outline-none;
+  }
+}

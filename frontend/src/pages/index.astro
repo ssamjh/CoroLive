@@ -1,0 +1,66 @@
+---
+import Base from '../layouts/Base.astro';
+import { CAMERAS, snap } from '../config/cameras';
+---
+
+<Base title="CoroLive - The Coromandel's Live Webcam Network">
+  <section class="mx-auto max-w-7xl px-4 pt-12 pb-4 text-center sm:px-6 sm:pt-16">
+    <h1 class="text-4xl font-extrabold text-balance sm:text-5xl">
+      Live from the <span class="text-brand-600 dark:text-brand-400">Coromandel</span>
+    </h1>
+    <p class="mx-auto mt-4 max-w-xl text-pretty text-muted">
+      Three cameras that are always online, streaming in HD and archives back to 2019.
+    </p>
+  </section>
+
+  <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6">
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        CAMERAS.map((c) => (
+          <article class="card group overflow-hidden transition-shadow hover:shadow-lg">
+            <a href={`/${c.id}`} class="relative block aspect-video overflow-hidden bg-surface-2">
+              <img
+                id={`${c.id}-thumbnail`}
+                src={snap(c)}
+                alt={`Live view from the ${c.name} camera`}
+                draggable="false"
+                loading="lazy"
+                class="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-black/65 px-2.5 py-1 text-xs font-bold tracking-wider text-white uppercase backdrop-blur-sm">
+                <span class="size-1.5 animate-pulse rounded-full bg-red-500" />
+                Live
+              </span>
+            </a>
+
+            <div class="p-5">
+              <h2 class="text-xl font-bold">{c.name}</h2>
+              <p class="mt-1 text-sm text-muted">{c.blurb}</p>
+
+              <div class="mt-4 flex gap-2">
+                <a href={`/${c.id}`} class="btn-primary flex-1">
+                  Watch live
+                </a>
+                <a href={`/timelapse?camera=${c.id}`} class="btn-ghost flex-1">
+                  Timelapse
+                </a>
+              </div>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</Base>
+
+<script>
+  import { CAMERAS, snap } from '../config/cameras';
+
+  // Keep the picker thumbnails roughly current without hammering the API.
+  setInterval(() => {
+    for (const c of CAMERAS) {
+      const el = document.getElementById(`${c.id}-thumbnail`) as HTMLImageElement | null;
+      if (el) el.src = `${snap(c)}?rand=${Math.random()}`;
+    }
+  }, 15000);
+</script>

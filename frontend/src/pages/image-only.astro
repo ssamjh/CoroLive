@@ -1,0 +1,47 @@
+---
+import Base from '../layouts/Base.astro';
+import { CAMERAS } from '../config/cameras';
+
+const ids = CAMERAS.map((c) => c.id);
+---
+
+<Base title="Image Only - CoroLive">
+  <!-- Reject unknown cameras before the body paints, as the old page did. -->
+  <script is:inline slot="head" define:vars={{ ids }}>
+    if (!ids.includes(new URLSearchParams(location.search).get('camera'))) {
+      location.replace('/');
+    }
+  </script>
+
+  <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+    <h1 class="mb-5 text-3xl font-extrabold sm:text-4xl" data-heading>Image Only</h1>
+
+    <div class="aspect-video w-full overflow-hidden rounded-xl bg-surface-2">
+      <img data-frame alt="" class="size-full object-cover" />
+    </div>
+
+    <p class="mt-4 text-sm text-muted">
+      A plain refreshing still image, for slow connections and devices that
+      can&rsquo;t handle the live video stream. Updates every 15 seconds.
+    </p>
+  </div>
+</Base>
+
+<script>
+  import { queryCamera, snap } from '../config/cameras';
+
+  const camera = queryCamera();
+  if (camera) {
+    document.title = `${camera.name} Image Only - CoroLive`;
+    document.querySelector('[data-heading]')!.textContent = `${camera.name} Image Only`;
+
+    const img = document.querySelector<HTMLImageElement>('[data-frame]')!;
+    img.alt = `Latest still image from the ${camera.name} camera`;
+
+    const refresh = () => {
+      img.src = `${snap(camera)}?rand=${Math.random()}`;
+    };
+    refresh();
+    setInterval(refresh, 15000);
+  }
+</script>

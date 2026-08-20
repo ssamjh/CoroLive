@@ -1,0 +1,55 @@
+---
+import Base from '../layouts/Base.astro';
+import Player from '../components/Player.astro';
+import { CAMERAS, m3u8, snap, archive } from '../config/cameras';
+
+// One page per camera, straight off the shared config - this replaces the
+// three near-identical whitianga/whangamata/thames.html stubs.
+export function getStaticPaths() {
+  return CAMERAS.map((camera) => ({ params: { camera: camera.id }, props: { camera } }));
+}
+
+const { camera } = Astro.props;
+---
+
+<Base
+  title={`${camera.name} - CoroLive`}
+  description={`Watch the ${camera.name} webcam live. ${camera.blurb}`}
+  ogImage={snap(camera)}
+>
+  <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+    <div class="mb-5 flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <div
+          class="inline-flex items-center gap-1.5 text-xs font-bold tracking-wider text-red-500 uppercase"
+        >
+          <span class="size-1.5 animate-pulse rounded-full bg-red-500"></span>
+          Live now
+        </div>
+        <h1 class="mt-1 text-3xl font-extrabold sm:text-4xl">{camera.name}</h1>
+        <p class="mt-1 text-sm text-muted">{camera.blurb}</p>
+      </div>
+
+      <div class="flex flex-wrap gap-2">
+        <a href={`/timelapse?camera=${camera.id}`} class="btn-ghost">Timelapse</a>
+        <a href={`/image-only?camera=${camera.id}`} class="btn-ghost">Image only</a>
+        <a href={archive(camera)} target="_blank" rel="noopener" class="btn-ghost">Archive</a>
+      </div>
+    </div>
+
+    <Player source={m3u8(camera)} poster={snap(camera)} />
+
+    <nav class="mt-8 border-t border-edge pt-6">
+      <p class="text-xs font-bold tracking-wider text-muted uppercase">Other cameras</p>
+      <div class="mt-3 flex flex-wrap gap-2">
+        {
+          CAMERAS.filter((c) => c.id !== camera.id).map((c) => (
+            <a href={`/${c.id}`} class="btn-ghost">
+              {c.name}
+            </a>
+          ))
+        }
+      </div>
+    </nav>
+  </div>
+</Base>

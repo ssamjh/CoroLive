@@ -1,0 +1,88 @@
+---
+import { GIT_REV } from '../config/build';
+---
+
+<footer class="mt-20 border-t border-edge bg-surface">
+  <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6">
+    <div class="grid gap-8 md:grid-cols-3 md:items-start">
+      <div class="text-center md:text-left">
+        <h2 class="text-xs font-bold tracking-wider text-muted uppercase">
+          Locations &amp; network sponsored by
+        </h2>
+        <a
+          href="https://cfm.co.nz/"
+          target="_blank"
+          rel="noopener"
+          class="mt-4 inline-block transition-opacity hover:opacity-80"
+        >
+          <img
+            src="/img/footer-cfm.webp"
+            alt="CFM"
+            class="mx-auto h-14 w-auto object-contain md:mx-0"
+            loading="lazy"
+          />
+        </a>
+      </div>
+
+      <div class="card p-5 text-center">
+        <p class="text-sm text-muted">
+          To get in contact, email
+          <span class="font-semibold text-ink">hi@corolive.nz</span>
+          or use the button below.
+        </p>
+        <a href="mailto:hi@corolive.nz" class="btn-primary mt-4">Send email</a>
+      </div>
+
+      <div class="text-center md:text-right">
+        <h2 class="text-xs font-bold tracking-wider text-muted uppercase">
+          Camera hardware sponsored by
+        </h2>
+        <a
+          href="https://www.swl.co.nz/page/33/provision-isr"
+          target="_blank"
+          rel="noopener"
+          class="mt-4 inline-block transition-opacity hover:opacity-80"
+        >
+          <img
+            src="/img/footer-provision.webp"
+            alt="Provision-ISR"
+            class="mx-auto h-14 w-auto object-contain md:mr-0"
+            loading="lazy"
+          />
+        </a>
+      </div>
+    </div>
+
+    <div
+      class="mt-10 flex flex-col items-center gap-1 border-t border-edge pt-6 text-sm text-muted"
+    >
+      <p>&copy; <span data-year>2026</span> CoroLive</p>
+      <p>
+        Built with
+        <a
+          href="https://astro.build/"
+          class="font-medium text-brand-700 hover:underline dark:text-brand-400">Astro</a
+        >
+        and
+        <a
+          href="https://tailwindcss.com/"
+          class="font-medium text-brand-700 hover:underline dark:text-brand-400">Tailwind</a
+        >
+        &middot;
+        <a
+          href="https://github.com/ssamjh/CoroLive"
+          class="font-medium text-brand-700 hover:underline dark:text-brand-400">GitHub</a
+        >
+        &middot; build
+        <code class="rounded bg-surface-2 px-1.5 py-0.5 text-xs">{GIT_REV}</code>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Replaces document.write(new Date().getFullYear()) - the year has to come
+  // from the client, since a build-time value goes stale every January.
+  const el = document.querySelector('[data-year]');
+  if (el) el.textContent = String(new Date().getFullYear());
+</script>

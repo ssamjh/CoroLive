@@ -1,0 +1,540 @@
+---
+import Base from '../layouts/Base.astro';
+import { CAMERAS } from '../config/cameras';
+
+const ids = CAMERAS.map((c) => c.id);
+---
+
+<Base title="Timelapse - CoroLive">
+  <script is:inline slot="head" define:vars={{ ids }}>
+    if (!ids.includes(new URLSearchParams(location.search).get('camera'))) {
+      location.replace('/');
+    }
+  </script>
+
+  <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+    <h1 class="mb-5 text-3xl font-extrabold sm:text-4xl" data-heading>Timelapse</h1>
+
+    <div id="tlContainer">
+      <div class="tl-stage relative aspect-video w-full overflow-hidden rounded-xl bg-black">
+        <img data-frame alt="" class="absolute inset-0 size-full object-cover" />
+
+        <div
+          data-time
+          class="absolute top-3 right-3 hidden rounded-lg bg-black/60 px-2.5 py-1 text-sm font-semibold text-white backdrop-blur-sm"
+        >
+        </div>
+
+        <div
+          data-controls
+          class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-3 pt-8 pb-3 opacity-0 transition-opacity duration-300"
+        >
+          <input
+            data-scrubber
+            type="range"
+            value="0"
+            min="0"
+            step="1"
+            disabled
+            aria-label="Scrub through frames"
+            class="tl-range mb-2 w-full"
+          />
+
+          <div class="flex flex-wrap items-center justify-center gap-2">
+            <button data-prev disabled class="btn-glass" title="Previous frame (←)" aria-label="Previous frame">
+              <svg class="size-4" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h2v14H6zm12 0v14l-9-7z"/></svg>
+            </button>
+
+            <button data-play disabled class="btn-glass" aria-label="Play or pause">
+              <svg class="size-4" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4v16l13-8z"/></svg>
+            </button>
+
+            <button data-next disabled class="btn-glass" title="Next frame (→)" aria-label="Next frame">
+              <svg class="size-4" viewBox="0 0 24 24" fill="currentColor"><path d="M16 5h2v14h-2zM6 5l9 7-9 7z"/></svg>
+            </button>
+
+            <label class="ml-1 text-xs font-semibold text-white/70">Speed</label>
+            <select data-speed disabled class="tl-input" aria-label="Playback speed">
+              <option value="0.25">0.25&times;</option>
+              <option value="0.5">0.5&times;</option>
+              <option value="1" selected>1&times;</option>
+              <option value="2">2&times;</option>
+              <option value="4">4&times;</option>
+              <option value="8">8&times;</option>
+            </select>
+
+            <input
+              data-timejump
+              type="time"
+              step="120"
+              disabled
+              title="Jump to time"
+              aria-label="Jump to time"
+              class="tl-input w-28"
+            />
+
+            <button data-fullscreen disabled class="btn-glass" aria-label="Toggle fullscreen">
+              <svg class="size-4" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h6v2H6v4H4zm10 0h6v6h-2V6h-4zM4 14h2v4h4v2H4zm14 0h2v6h-6v-2h4z"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div data-progress class="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div class="w-3/5 max-w-sm text-center text-white">
+            <p data-progress-label class="text-sm font-semibold">Loading frames&hellip;</p>
+            <div class="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-white/20">
+              <div data-bar class="h-full w-0 rounded-full bg-brand-500 transition-[width] duration-150"></div>
+            </div>
+            <p data-bytes class="mt-2 text-xs text-white/70"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <form data-form action="/timelapse" class="card mt-6 p-5">
+      <div class="flex flex-wrap items-end justify-center gap-4">
+        <div>
+          <label data-start-label for="dateStart" class="mb-1 block text-xs font-bold tracking-wider text-muted uppercase">
+            Date
+          </label>
+          <input type="date" id="dateStart" data-start required class="field" />
+        </div>
+
+        <div data-end-wrap class="hidden">
+          <label for="dateEnd" class="mb-1 block text-xs font-bold tracking-wider text-muted uppercase">
+            End date
+          </label>
+          <input type="date" id="dateEnd" data-end class="field" />
+        </div>
+
+        <button type="submit" class="btn-primary">Load</button>
+      </div>
+
+      <label class="mt-4 flex items-center justify-center gap-2 text-sm text-muted">
+        <input type="checkbox" data-range-toggle class="size-4 accent-brand-500" />
+        Date range (up to 7 days)
+      </label>
+    </form>
+  </div>
+</Base>
+
+<style is:global>
+  /* Fullscreen: letterbox the stage to 16:9 inside whatever the screen is. */
+  #tlContainer:fullscreen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+  }
+  #tlContainer:fullscreen .tl-stage {
+    aspect-ratio: auto;
+    width: min(100vw, calc(100vh * 16 / 9));
+    height: min(100vh, calc(100vw * 9 / 16));
+    border-radius: 0;
+  }
+
+  /* Range + form controls sitting on top of the video need their own dark
+     treatment; Tailwind has no opinion about native control internals. */
+  .tl-range {
+    appearance: none;
+    height: 4px;
+    border-radius: 9999px;
+    background: rgb(255 255 255 / 0.25);
+  }
+  .tl-range::-webkit-slider-thumb {
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 9999px;
+    background: var(--color-brand-500);
+    cursor: pointer;
+  }
+  .tl-range::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border: 0;
+    border-radius: 9999px;
+    background: var(--color-brand-500);
+    cursor: pointer;
+  }
+  .tl-range:disabled {
+    opacity: 0.5;
+  }
+
+  .tl-input {
+    border-radius: 0.5rem;
+    border: 1px solid rgb(255 255 255 / 0.25);
+    background: rgb(255 255 255 / 0.05);
+    padding: 0.375rem 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #fff;
+  }
+  .tl-input:disabled {
+    opacity: 0.5;
+  }
+  .tl-input option {
+    color: initial;
+  }
+  .tl-input::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    opacity: 0.7;
+  }
+</style>
+
+<script is:inline src="https://cdn.jsdelivr.net/npm/sql.js@1.14.1/dist/sql-wasm.js"></script>
+
+<script>
+  import { API, queryCamera } from '../config/cameras';
+  import { addDays, nzNow, selectedDates } from '../lib/nzdate';
+
+  const SQL_JS_BASE = 'https://cdn.jsdelivr.net/npm/sql.js@1.14.1/dist/';
+  const FPS = 12;
+
+  type Frame = { ts: string; date: string; url: string };
+
+  const camera = queryCamera();
+
+  // ---- Date selection ------------------------------------------------------
+  // The logic lives in src/lib/nzdate.ts so the self-check under scripts/ can
+  // exercise exactly what the page ships.
+
+  const NOW = nzNow();
+
+  // The archive for "today" isn't written until just after 06:00, so before
+  // 06:05 the newest selectable day is yesterday.
+  const START_DATE = camera?.start ?? '';
+  const MAX_DATE = NOW.time < '06:05' ? addDays(NOW.date, -1) : NOW.date;
+  const DEFAULT_DATE = NOW.time < '06:00' ? addDays(NOW.date, -1) : NOW.date;
+
+  const DATES = camera
+    ? selectedDates(new URLSearchParams(location.search).get('date'), {
+        start: START_DATE,
+        max: MAX_DATE,
+        fallback: DEFAULT_DATE,
+      })
+    : [];
+  const archiveBase = (date: string) =>
+    `${API}/${camera!.id}/archive/${date.replace(/-/g, '/')}`;
+  const DB_SOURCES = DATES.map((d) => ({ url: `${archiveBase(d)}/images.db`, date: d }));
+
+  // ---- Player --------------------------------------------------------------
+
+  const $ = <T extends HTMLElement>(sel: string) => document.querySelector<T>(sel)!;
+
+  const PLAY_ICON =
+    '<svg class="size-4" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4v16l13-8z"/></svg>';
+  const PAUSE_ICON =
+    '<svg class="size-4" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6zm8 0h4v16h-4z"/></svg>';
+  const EXPAND_ICON =
+    '<svg class="size-4" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h6v2H6v4H4zm10 0h6v6h-2V6h-4zM4 14h2v4h4v2H4zm14 0h2v6h-6v-2h4z"/></svg>';
+  const COMPRESS_ICON =
+    '<svg class="size-4" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4v6H4V8h4V4zm10 4v2h-6V4h2v4zM4 14h6v6H8v-4H4zm12 2v4h-2v-6h6v2z"/></svg>';
+
+  if (camera) {
+    document.title = `${camera.name} Timelapse - CoroLive`;
+    $('[data-heading]').textContent = `${camera.name} Timelapse`;
+
+    const MULTI_DAY = DB_SOURCES.length > 1;
+
+    const frameEl = $<HTMLImageElement>('[data-frame]');
+    const timeEl = $('[data-time]');
+    const scrubber = $<HTMLInputElement>('[data-scrubber]');
+    const progressEl = $('[data-progress]');
+    const progressLabel = $('[data-progress-label]');
+    const bar = $('[data-bar]');
+    const bytesEl = $('[data-bytes]');
+    const playBtn = $<HTMLButtonElement>('[data-play]');
+    const prevBtn = $<HTMLButtonElement>('[data-prev]');
+    const nextBtn = $<HTMLButtonElement>('[data-next]');
+    const speedSel = $<HTMLSelectElement>('[data-speed]');
+    const fsBtn = $<HTMLButtonElement>('[data-fullscreen]');
+    const timeJumpEl = $<HTMLInputElement>('[data-timejump]');
+    const container = $('#tlContainer');
+    const controls = $('[data-controls]');
+
+    frameEl.alt = `${camera.name} timelapse frame`;
+    frameEl.src = `${archiveBase(DATES[0]!)}/thumbnail.avif`;
+
+    // Per-day time selection doesn't make sense across days.
+    if (MULTI_DAY) timeJumpEl.style.display = 'none';
+
+    let frames: Frame[] = [];
+    let current = 0;
+    let userScrubbing = false;
+    let playing = false;
+    let timer: ReturnType<typeof setInterval> | null = null;
+
+    const timeToMins = (t: string) => {
+      const [h, m] = t.split(':');
+      return parseInt(h!) * 60 + parseInt(m!);
+    };
+
+    function fmt12(ts: string) {
+      const [hs, ms] = ts.split(':');
+      const h = parseInt(hs!);
+      const m = parseInt(ms!);
+      return `${h % 12 || 12}:${m < 10 ? '0' : ''}${m} ${h >= 12 ? 'PM' : 'AM'}`;
+    }
+
+    function fmtFrameLabel(frame: Frame) {
+      const t = fmt12(frame.ts);
+      if (MULTI_DAY && frame.date) {
+        const d = new Date(`${frame.date}T12:00:00`);
+        return `${d.toLocaleDateString('en-NZ', { month: 'short', day: 'numeric' })} ${t}`;
+      }
+      return t;
+    }
+
+    function showFrame(i: number) {
+      frameEl.src = frames[i]!.url;
+      timeEl.textContent = fmtFrameLabel(frames[i]!);
+      timeEl.classList.remove('hidden');
+      scrubber.value = String(i);
+      timeJumpEl.value = frames[i]!.ts.substring(0, 5);
+    }
+
+    function startTimer() {
+      const interval = Math.round(1000 / (FPS * parseFloat(speedSel.value)));
+      timer = setInterval(() => {
+        if (!userScrubbing) {
+          current = (current + 1) % frames.length;
+          showFrame(current);
+        }
+      }, interval);
+    }
+
+    function play() {
+      if (playing) return;
+      playing = true;
+      playBtn.innerHTML = PAUSE_ICON;
+      startTimer();
+    }
+
+    function pause() {
+      if (!playing) return;
+      playing = false;
+      playBtn.innerHTML = PLAY_ICON;
+      if (timer) clearInterval(timer);
+      timer = null;
+    }
+
+    // ---- Controls show/hide ------------------------------------------------
+    let hideTimer: ReturnType<typeof setTimeout> | null = null;
+    const fade = () => {
+      hideTimer = setTimeout(() => controls.classList.add('opacity-0'), 3000);
+    };
+    function showControls() {
+      controls.classList.remove('opacity-0');
+      if (hideTimer) clearTimeout(hideTimer);
+      fade();
+    }
+    container.addEventListener('mousemove', showControls);
+    container.addEventListener('touchstart', showControls);
+    controls.addEventListener('mouseenter', () => {
+      if (hideTimer) clearTimeout(hideTimer);
+      controls.classList.remove('opacity-0');
+    });
+    controls.addEventListener('mouseleave', fade);
+
+    // ---- Playback ----------------------------------------------------------
+    const step = (delta: number) => {
+      if (!frames.length) return;
+      current = Math.min(frames.length - 1, Math.max(0, current + delta));
+      showFrame(current);
+    };
+
+    playBtn.addEventListener('click', () => (playing ? pause() : play()));
+    prevBtn.addEventListener('click', () => step(-1));
+    nextBtn.addEventListener('click', () => step(1));
+
+    speedSel.addEventListener('change', () => {
+      if (playing) {
+        if (timer) clearInterval(timer);
+        timer = null;
+        startTimer();
+      }
+    });
+
+    fsBtn.addEventListener('click', () => {
+      if (!document.fullscreenElement) container.requestFullscreen();
+      else document.exitFullscreen();
+    });
+    document.addEventListener('fullscreenchange', () => {
+      fsBtn.innerHTML = document.fullscreenElement ? COMPRESS_ICON : EXPAND_ICON;
+    });
+
+    scrubber.addEventListener('mousedown', () => (userScrubbing = true));
+    scrubber.addEventListener('touchstart', () => (userScrubbing = true));
+    scrubber.addEventListener('mouseup', () => (userScrubbing = false));
+    scrubber.addEventListener('touchend', () => (userScrubbing = false));
+    scrubber.addEventListener('input', function () {
+      current = parseInt(this.value);
+      showFrame(current);
+    });
+
+    // Arrow key navigation (skip when focus is on a form element).
+    document.addEventListener('keydown', (e) => {
+      const tag = document.activeElement?.tagName;
+      if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
+      if (!frames.length) return;
+      if (e.key === 'ArrowLeft') {
+        step(-1);
+        e.preventDefault();
+      } else if (e.key === 'ArrowRight') {
+        step(1);
+        e.preventDefault();
+      }
+    });
+
+    timeJumpEl.addEventListener('change', function () {
+      if (!frames.length || !this.value) return;
+      pause();
+      const target = timeToMins(this.value);
+      let best = 0;
+      let bestDiff = Infinity;
+      frames.forEach((f, i) => {
+        const diff = Math.abs(timeToMins(f.ts.substring(0, 5)) - target);
+        if (diff < bestDiff) {
+          bestDiff = diff;
+          best = i;
+        }
+      });
+      current = best;
+      showFrame(current);
+    });
+
+    // ---- Sequential DB loader ----------------------------------------------
+    const fmtBytes = (b: number) =>
+      b >= 1048576 ? `${(b / 1048576).toFixed(1)} MB` : `${(b / 1024).toFixed(0)} KB`;
+
+    async function loadDb(SQL: any, source: { url: string; date: string }, idx: number) {
+      const dayTag = MULTI_DAY ? `Day ${idx + 1} of ${DB_SOURCES.length} - ` : '';
+      progressLabel.textContent = MULTI_DAY
+        ? `Loading day ${idx + 1} of ${DB_SOURCES.length}...`
+        : 'Loading frames...';
+      bar.style.width = '0%';
+      bytesEl.textContent = '';
+
+      const res = await fetch(source.url);
+      const total = parseInt(res.headers.get('content-length') || '0');
+      const reader = res.body!.getReader();
+      const chunks: Uint8Array[] = [];
+      let received = 0;
+
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+        received += value.length;
+        if (total) bar.style.width = `${Math.round((received / total) * 100)}%`;
+        bytesEl.textContent =
+          dayTag + (total ? `${fmtBytes(received)} / ${fmtBytes(total)}` : fmtBytes(received));
+      }
+
+      const buf = new Uint8Array(received);
+      let offset = 0;
+      for (const c of chunks) {
+        buf.set(c, offset);
+        offset += c.length;
+      }
+
+      const db = new SQL.Database(buf);
+      const result = db.exec('SELECT timestamp, ext, data FROM frames ORDER BY id');
+      db.close();
+
+      if (result.length > 0) {
+        frames = frames.concat(
+          result[0].values.map((r: [string, string, Uint8Array<ArrayBuffer>]) => ({
+            ts: r[0],
+            date: source.date,
+            url: URL.createObjectURL(
+              new Blob([r[2]], { type: r[1] === '.avif' ? 'image/avif' : 'image/webp' }),
+            ),
+          })),
+        );
+      }
+    }
+
+    function failed() {
+      progressEl.innerHTML =
+        '<p class="p-4 text-sm font-semibold text-white">Failed to load timelapse.</p>';
+    }
+
+    function finishLoading() {
+      if (!frames.length) return failed();
+
+      scrubber.max = String(frames.length - 1);
+      for (const el of [scrubber, playBtn, prevBtn, nextBtn, speedSel, fsBtn, timeJumpEl]) {
+        el.disabled = false;
+      }
+      progressEl.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+      setTimeout(() => progressEl.classList.add('hidden'), 500);
+      showFrame(0);
+      play();
+    }
+
+    (async () => {
+      try {
+        const SQL = await (window as any).initSqlJs({
+          locateFile: (f: string) => SQL_JS_BASE + f,
+        });
+        // Days load in order so frames stay chronological; one bad day is
+        // skipped rather than failing the whole range.
+        for (let i = 0; i < DB_SOURCES.length; i++) {
+          try {
+            await loadDb(SQL, DB_SOURCES[i]!, i);
+          } catch (e) {
+            console.error(`Failed to load day ${i + 1}:`, e);
+          }
+        }
+        finishLoading();
+      } catch (e) {
+        console.error(e);
+        failed();
+      }
+    })();
+
+    // ---- Date picker form --------------------------------------------------
+    const rangeToggle = $<HTMLInputElement>('[data-range-toggle]');
+    const endWrap = $('[data-end-wrap]');
+    const startEl = $<HTMLInputElement>('[data-start]');
+    const endEl = $<HTMLInputElement>('[data-end]');
+    const form = $<HTMLFormElement>('[data-form]');
+    const startLabel = $('[data-start-label]');
+
+    for (const el of [startEl, endEl]) {
+      el.min = START_DATE;
+      el.max = MAX_DATE;
+    }
+    startEl.value = DATES[0]!;
+    endEl.value = DATES[DATES.length - 1]!;
+
+    if (DATES.length > 1) {
+      rangeToggle.checked = true;
+      endWrap.classList.remove('hidden');
+      startLabel.textContent = 'Start date';
+    }
+
+    rangeToggle.addEventListener('change', function () {
+      endWrap.classList.toggle('hidden', !this.checked);
+      startLabel.textContent = this.checked ? 'Start date' : 'Date';
+    });
+
+    startEl.addEventListener('change', function () {
+      if (endEl.value && endEl.value < this.value) endEl.value = this.value;
+      endEl.min = this.value;
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const start = startEl.value;
+      if (!start) return;
+      const dateParam =
+        rangeToggle.checked && endEl.value && endEl.value !== start
+          ? `${start}_${endEl.value}`
+          : start;
+      location.href = `/timelapse?camera=${encodeURIComponent(camera.id)}&date=${dateParam}`;
+    });
+  }
+</script>

@@ -1,6 +1,6 @@
-# web/ is build output - run `python3 scripts/build-web.py` to populate it.
-web/*
-!web/.gitkeep
+node_modules/
+dist/
+.astro/
 
 scripts/convert-todb-avif.py
 scripts/ARCHIVE-FORMAT.md

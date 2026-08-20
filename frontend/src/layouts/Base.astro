@@ -1,0 +1,79 @@
+---
+import '../styles/global.css';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  /** Drops the navbar and footer - used by the bare image-only style pages. */
+  bare?: boolean;
+}
+
+const {
+  title,
+  description = "CoroLive is the Coromandel's live webcam network, with cameras in Whitianga, Whangamata and Thames plus extensive archives.",
+  ogImage = 'https://corolive.nz/img/corolive512.webp',
+  bare = false,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="HandheldFriendly" content="true" />
+    <meta name="theme-color" content="#0dcaf0" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:title" content={title} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:site_name" content="CoroLive" />
+    <meta property="og:description" content={description} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" type="image/webp" href="/img/corolive64.webp" />
+    <link rel="apple-touch-icon" href="/img/corolive256.webp" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    />
+
+    <!-- Streams and archives are served from api.corolive.nz on every page. -->
+    <link rel="preconnect" href="https://api.corolive.nz" />
+
+    <slot name="head" />
+  </head>
+
+  <body class="flex min-h-screen flex-col font-sans antialiased">
+    {!bare && <Navbar />}
+
+    <main class="flex-1">
+      <slot />
+    </main>
+
+    {!bare && <Footer />}
+
+    <script
+      is:inline
+      defer
+      src="https://stats.sjh.at/ingress/b9602807-fabc-4aea-90c5-c276bd4b31bb/script.js"></script>
+    <noscript>
+      <img
+        src="https://stats.sjh.at/ingress/b9602807-fabc-4aea-90c5-c276bd4b31bb/pixel.gif"
+        alt=""
+      />
+    </noscript>
+  </body>
+</html>

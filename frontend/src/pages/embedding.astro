@@ -1,0 +1,62 @@
+---
+import Base from '../layouts/Base.astro';
+import { CAMERAS } from '../config/cameras';
+
+const snippet =
+  '<iframe width="640" height="360" src="https://corolive.nz/embed?camera=CAMERA-ID"></iframe>';
+---
+
+<Base
+  title="Embedding - CoroLive"
+  description="How to embed a CoroLive webcam on your own website using an HTML iframe."
+>
+  <div class="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+    <h1 class="text-3xl font-extrabold sm:text-4xl">Embedding</h1>
+    <p class="mt-3 text-muted">
+      So you want to put a CoroLive camera on your own website? Great &mdash; there
+      are a few things worth knowing first.
+    </p>
+
+    <section class="mt-10">
+      <h2 class="text-lg font-bold">1. Drop in an iframe</h2>
+      <p class="mt-2 text-sm text-muted">
+        The easiest way to get started is an HTML iframe pointing at the embed URL.
+      </p>
+      <pre
+        class="mt-3 overflow-x-auto rounded-xl border border-edge bg-surface-2 p-4 text-sm"><code>{snippet}</code></pre>
+    </section>
+
+    <section class="mt-8">
+      <h2 class="text-lg font-bold">2. Pick your camera</h2>
+      <p class="mt-2 text-sm text-muted">
+        Replace <code class="rounded bg-surface-2 px-1.5 py-0.5 text-xs">CAMERA-ID</code>
+        with one of:
+      </p>
+      <ul class="mt-3 flex flex-wrap gap-2">
+        {
+          CAMERAS.map((c) => (
+            <li class="rounded-lg border border-edge bg-surface-2 px-3 py-1.5 font-mono text-sm">
+              {c.id}
+            </li>
+          ))
+        }
+      </ul>
+      <p class="mt-3 text-sm text-muted">
+        New to iframes? <a
+          href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe"
+          class="font-medium text-brand-700 hover:underline dark:text-brand-400"
+          >MDN has a good primer</a
+        >.
+      </p>
+    </section>
+
+    <section class="card mt-8 border-brand-500/40 p-5">
+      <h2 class="text-lg font-bold">3. Most importantly &mdash; get in touch</h2>
+      <p class="mt-2 text-sm text-muted">
+        Let me know you&rsquo;re going to embed CoroLive so I can keep track and
+        whitelist your website.
+      </p>
+      <a href="mailto:hi@corolive.nz" class="btn-primary mt-4">Email hi@corolive.nz</a>
+    </section>
+  </div>
+</Base>

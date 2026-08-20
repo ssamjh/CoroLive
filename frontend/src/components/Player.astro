@@ -1,0 +1,46 @@
+---
+interface Props {
+  source: string;
+  poster: string;
+  /** Only the embeddable player is watermarked. */
+  watermark?: boolean;
+}
+
+const { source, poster, watermark = false } = Astro.props;
+---
+
+<div class="aspect-video w-full overflow-hidden rounded-xl bg-black">
+  <div id="player" class="size-full"></div>
+</div>
+
+<script is:inline src="https://cdn.jsdelivr.net/npm/@clappr/player@0.14.3/dist/clappr.min.js"
+></script>
+
+<script is:inline define:vars={{ source, poster, watermark }}>
+  new window.Clappr.Player({
+    source,
+    poster: poster + '?rand=' + Math.random(),
+    parentId: '#player',
+    position: 'bottom-right',
+    watermark: watermark ? 'https://corolive.nz/img/watermark.webp' : undefined,
+    watermarkLink: watermark ? 'https://corolive.nz' : undefined,
+    mute: true,
+    autoPlay: true,
+    actualLiveTime: true,
+    hideVolumeBar: true,
+    width: '100%',
+    height: '100%',
+    events: {
+      onReady: function () {
+        var plugin = this.getPlugin('click_to_pause');
+        plugin && plugin.disable();
+      },
+      // Clappr reads live-vs-VOD off the HLS manifest, which lands after the
+      // media control has already rendered - so it renders the VOD seek bar and
+      // never revisits it. Re-render once playback starts to get the LIVE badge.
+      onPlay: function () {
+        this.core && this.core.mediaControl && this.core.mediaControl.render();
+      },
+    },
+  });
+</script>

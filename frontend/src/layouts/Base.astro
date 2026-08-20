@@ -1,5 +1,8 @@
 ---
 import '../styles/global.css';
+// Vite hands back the hashed, same-origin URL of the latin subset so it can be
+// preloaded by name.
+import fontLatin from '@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-normal.woff2?url';
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
 
@@ -43,12 +46,9 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     <link rel="icon" type="image/webp" href="/img/corolive64.webp" />
     <link rel="apple-touch-icon" href="/img/corolive256.webp" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-    />
+    <!-- Preloaded so the face is in hand by first paint instead of swapping in
+         afterwards. Same origin, but font preloads still need crossorigin. -->
+    <link rel="preload" href={fontLatin} as="font" type="font/woff2" crossorigin />
 
     <!-- Streams and archives are served from api.corolive.nz on every page. -->
     <link rel="preconnect" href="https://api.corolive.nz" />

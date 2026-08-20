@@ -16,7 +16,7 @@ const ids = CAMERAS.map((c) => c.id);
     <h1 class="mb-5 text-3xl font-extrabold sm:text-4xl" data-heading>Timelapse</h1>
 
     <div id="tlContainer">
-      <div class="tl-stage relative aspect-video w-full overflow-hidden rounded-xl bg-black">
+      <div class="tl-stage relative aspect-video w-full overflow-hidden bg-black">
         <img data-frame alt="" class="absolute inset-0 size-full object-cover" />
 
         <div
@@ -130,7 +130,6 @@ const ids = CAMERAS.map((c) => c.id);
     aspect-ratio: auto;
     width: min(100vw, calc(100vh * 16 / 9));
     height: min(100vh, calc(100vw * 9 / 16));
-    border-radius: 0;
   }
 
   /* Range + form controls sitting on top of the video need their own dark

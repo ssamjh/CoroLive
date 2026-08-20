@@ -9,15 +9,15 @@ interface Props {
 const { source, poster, watermark = false } = Astro.props;
 ---
 
-<div class="relative aspect-video w-full overflow-hidden rounded-xl bg-black">
-  <!-- Native controls: hls.js is a stream loader, not a UI, and the browser's
-       own chrome brings fullscreen, picture-in-picture and AirPlay for free. -->
+<div data-stage class="relative aspect-video w-full overflow-hidden bg-black">
+  <!-- No `controls`: the browser's bar carries a volume slider and a seek bar,
+       neither of which means anything for a muted live feed. The two controls
+       that do apply are below. -->
   <video
     data-player
     data-source={source}
-    data-poster={poster}
+    poster={poster}
     class="block size-full"
-    controls
     autoplay
     muted
     playsinline></video>
@@ -28,23 +28,42 @@ const { source, poster, watermark = false } = Astro.props;
         href="https://corolive.nz"
         target="_blank"
         rel="noopener"
-        class="absolute right-3 bottom-14 opacity-80 transition-opacity hover:opacity-100"
+        class="absolute right-3 bottom-16 opacity-80 transition-opacity hover:opacity-100"
       >
         <img src="https://corolive.nz/img/watermark.webp" alt="CoroLive" class="h-8 w-auto" />
       </a>
     )
   }
+
+  <div
+    data-controls
+    class="absolute inset-x-0 bottom-0 flex items-center bg-gradient-to-t from-black/80 to-transparent px-3 pt-8 pb-3 opacity-0 transition-opacity duration-300"
+  >
+    <button type="button" data-play class="btn-glass" aria-label="Play"></button>
+    <button type="button" data-fullscreen class="btn-glass ml-auto" aria-label="Fullscreen"></button>
+  </div>
 </div>
 
 <script>
-  import { attachStream } from '../lib/hls';
+  import { attachStream, wireControls, ICONS } from '../lib/player';
 
-  const video = document.querySelector<HTMLVideoElement>('[data-player]');
+  const stage = document.querySelector<HTMLElement>('[data-stage]');
+  const video = stage?.querySelector<HTMLVideoElement>('[data-player]');
 
-  if (video) {
-    // Busted per load so the still frame is current, not whatever the CDN
-    // last cached - the poster only shows until the stream starts.
-    video.poster = `${video.dataset.poster}?rand=${Math.random()}`;
-    attachStream(video, video.dataset.source!);
+  if (stage && video) {
+    const controls = stage.querySelector<HTMLElement>('[data-controls]')!;
+    const fsBtn = stage.querySelector<HTMLButtonElement>('[data-fullscreen]')!;
+    fsBtn.innerHTML = ICONS.expand;
+
+    const stream = attachStream(video, video.dataset.source!);
+
+    wireControls({
+      stage,
+      video,
+      playBtn: stage.querySelector<HTMLButtonElement>('[data-play]')!,
+      fsBtn,
+      stream,
+      setOpacity: (visible) => controls.classList.toggle('opacity-0', !visible),
+    });
   }
 </script>

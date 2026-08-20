@@ -26,6 +26,12 @@
                     var plugin = this.getPlugin('click_to_pause');
                     plugin && plugin.disable();
                 },
+                // Clappr reads live-vs-VOD off the HLS manifest, which lands after the
+                // media control has already rendered - so it renders the VOD seek bar and
+                // never revisits it. Re-render once playback starts to get the LIVE badge.
+                onPlay: function () {
+                    this.core && this.core.mediaControl && this.core.mediaControl.render();
+                },
             },
         });
     }

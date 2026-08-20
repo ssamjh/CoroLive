@@ -21,7 +21,7 @@ const ids = CAMERAS.map((c) => c.id);
 
         <div
           data-time
-          class="absolute top-3 right-3 hidden rounded-lg bg-black/60 px-2.5 py-1 text-sm font-semibold text-white backdrop-blur-sm"
+          class="absolute top-3 right-3 hidden rounded-lg bg-black/60 px-2.5 py-1 font-mono text-sm font-semibold text-white backdrop-blur-sm"
         >
         </div>
 
@@ -70,7 +70,7 @@ const ids = CAMERAS.map((c) => c.id);
               disabled
               title="Jump to time"
               aria-label="Jump to time"
-              class="tl-input w-28"
+              class="tl-input w-30 font-mono"
             />
 
             <button data-fullscreen disabled class="btn-glass" aria-label="Toggle fullscreen">
@@ -270,18 +270,25 @@ const ids = CAMERAS.map((c) => c.id);
       return parseInt(h!) * 60 + parseInt(m!);
     };
 
+    // U+2007 FIGURE SPACE is digit-width and doesn't collapse, so single-digit
+    // hours and days still line up in the monospaced overlay.
+    const PAD = ' ';
+
     function fmt12(ts: string) {
       const [hs, ms] = ts.split(':');
       const h = parseInt(hs!);
       const m = parseInt(ms!);
-      return `${h % 12 || 12}:${m < 10 ? '0' : ''}${m} ${h >= 12 ? 'PM' : 'AM'}`;
+      const h12 = h % 12 || 12;
+      return `${h12 < 10 ? PAD : ''}${h12}:${m < 10 ? '0' : ''}${m} ${h >= 12 ? 'PM' : 'AM'}`;
     }
 
     function fmtFrameLabel(frame: Frame) {
       const t = fmt12(frame.ts);
       if (MULTI_DAY && frame.date) {
         const d = new Date(`${frame.date}T12:00:00`);
-        return `${d.toLocaleDateString('en-NZ', { month: 'short', day: 'numeric' })} ${t}`;
+        const month = d.toLocaleDateString('en-NZ', { month: 'short' });
+        const day = d.getDate();
+        return `${month} ${day < 10 ? PAD : ''}${day} ${t}`;
       }
       return t;
     }

@@ -1,23 +1,32 @@
 ---
 import Base from '../layouts/Base.astro';
-import { CAMERAS } from '../config/cameras';
+import { API, CAMERAS } from '../config/cameras';
 
-const ids = CAMERAS.map((c) => c.id);
+// These pages resolve their camera from ?camera=, so every visible string is
+// client-side. A bundled <script> is deferred, which meant the generic heading
+// painted first and was then swapped - so both scripts here are inline and run
+// during parse instead.
+const cameraNames = Object.fromEntries(CAMERAS.map((c) => [c.id, c.name]));
+const cfg = { api: API, names: cameraNames };
 ---
 
 <Base title="Image Only - CoroLive">
   <!-- Reject unknown cameras before the body paints, as the old page did. -->
-  <script is:inline slot="head" define:vars={{ ids }}>
-    if (!ids.includes(new URLSearchParams(location.search).get('camera'))) {
-      location.replace('/');
-    }
+  <script is:inline slot="head" define:vars={{ cameraNames }}>
+    var camera = new URLSearchParams(location.search).get('camera');
+    if (!Object.prototype.hasOwnProperty.call(cameraNames, camera)) location.replace('/');
+    else document.title = cameraNames[camera] + ' Image Only - CoroLive';
   </script>
 
   <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
-    <h1 class="mb-5 text-3xl font-extrabold sm:text-4xl" data-heading>Image Only</h1>
+    <h1 class="mb-5 text-3xl font-extrabold sm:text-4xl" data-heading></h1>
 
     <div class="aspect-video w-full overflow-hidden rounded-xl bg-surface-2">
-      <img data-frame alt="" class="size-full object-cover" />
+      <img
+        data-frame
+        alt=""
+        class="size-full object-cover opacity-0 transition-opacity duration-300"
+      />
     </div>
 
     <p class="mt-4 text-sm text-muted">
@@ -25,23 +34,28 @@ const ids = CAMERAS.map((c) => c.id);
       can&rsquo;t handle the live video stream. Updates every 15 seconds.
     </p>
   </div>
+
+  <!-- define:vars wraps each script in its own IIFE, so the camera is resolved
+       again here rather than shared with the one in the head. -->
+  <script is:inline define:vars={{ cfg }}>
+    var camera = new URLSearchParams(location.search).get('camera');
+    if (Object.prototype.hasOwnProperty.call(cfg.names, camera)) {
+      var name = cfg.names[camera];
+
+      document.querySelector('[data-heading]').textContent = name + ' Image Only';
+
+      var img = document.querySelector('[data-frame]');
+      img.alt = 'Latest still image from the ' + name + ' camera';
+      // Fade the first frame in rather than popping it over the placeholder.
+      img.addEventListener('load', function () {
+        img.classList.remove('opacity-0');
+      });
+
+      var refresh = function () {
+        img.src = cfg.api + '/' + camera + '/snap.webp?rand=' + Math.random();
+      };
+      refresh();
+      setInterval(refresh, 15000);
+    }
+  </script>
 </Base>
-
-<script>
-  import { queryCamera, snap } from '../config/cameras';
-
-  const camera = queryCamera();
-  if (camera) {
-    document.title = `${camera.name} Image Only - CoroLive`;
-    document.querySelector('[data-heading]')!.textContent = `${camera.name} Image Only`;
-
-    const img = document.querySelector<HTMLImageElement>('[data-frame]')!;
-    img.alt = `Latest still image from the ${camera.name} camera`;
-
-    const refresh = () => {
-      img.src = `${snap(camera)}?rand=${Math.random()}`;
-    };
-    refresh();
-    setInterval(refresh, 15000);
-  }
-</script>

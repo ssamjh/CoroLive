@@ -12,8 +12,6 @@ export type Camera = {
   stream: string;
   /** First day with an archive, as a Pacific/Auckland Y-m-d date. */
   start: string;
-  /** One-line description, shown on the picker cards. */
-  blurb: string;
 };
 
 export const CAMERAS: Camera[] = [
@@ -22,21 +20,18 @@ export const CAMERAS: Camera[] = [
     name: 'Whitianga',
     stream: '283795aa-816e-4d95-8ac0-05cabb67c05e',
     start: '2019-03-17',
-    blurb: 'Looking out over Mercury Bay from Tarapatiki',
   },
   {
     id: 'whangamata',
     name: 'Whangamata',
     stream: 'd456ab62-df95-4872-a96a-734ff455996e',
     start: '2021-03-17',
-    blurb: 'A wide angle view of Onemana and the Whangamata',
   },
   {
     id: 'thames',
     name: 'Thames',
     stream: 'afb4677d-4dc4-44e9-94dd-de5fb0b68c29',
     start: '2021-05-06',
-    blurb: 'The Firth of Thames and the Coromandel Ranges',
   },
 ];
 

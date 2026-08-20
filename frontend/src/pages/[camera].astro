@@ -14,21 +14,12 @@ const { camera } = Astro.props;
 
 <Base
   title={`${camera.name} - CoroLive`}
-  description={`Watch the ${camera.name} webcam live. ${camera.blurb}`}
+  description={`Watch the ${camera.name} webcam live on CoroLive.`}
   ogImage={snap(camera)}
 >
   <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
     <div class="mb-5 flex flex-wrap items-end justify-between gap-4">
-      <div>
-        <div
-          class="inline-flex items-center gap-1.5 text-xs font-bold tracking-wider text-red-500 uppercase"
-        >
-          <span class="size-1.5 animate-pulse rounded-full bg-red-500"></span>
-          Live now
-        </div>
-        <h1 class="mt-1 text-3xl font-extrabold sm:text-4xl">{camera.name}</h1>
-        <p class="mt-1 text-sm text-muted">{camera.blurb}</p>
-      </div>
+      <h1 class="text-3xl font-extrabold sm:text-4xl">{camera.name}</h1>
 
       <div class="flex flex-wrap gap-2">
         <a href={`/timelapse?camera=${camera.id}`} class="btn-ghost">Timelapse</a>

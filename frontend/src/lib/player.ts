@@ -184,6 +184,69 @@ export function attachStream(video: HTMLVideoElement, source: string): Stream | 
   return null;
 }
 
+/** Cache-busted snapshot URL, so a reload really is a reload. */
+function freshSnap(src: string) {
+  return `${src}${src.includes('?') ? '&' : '?'}rand=${Math.random()}`;
+}
+
+/**
+ * Drive the still-image layer that sits over the video.
+ *
+ * The `poster` attribute alone is not enough: Firefox drops the poster as soon
+ * as the media element starts loading, so the stage shows black for the second
+ * or two before the first frame decodes, where Chromium holds the poster until
+ * that frame arrives. An <img> we hide ourselves behaves the same everywhere.
+ *
+ * The markup ships the plain snapshot URL, so the browser cache paints a still
+ * instantly; `refresh()` then re-fetches off-screen and swaps only once the new
+ * bytes are decoded, so the visible image never blanks while we check.
+ */
+export function attachPoster(img: HTMLImageElement, video: HTMLVideoElement) {
+  // Held separately: img.src becomes a cache-busted URL after the first refresh.
+  const src = img.dataset.posterSrc || img.src;
+
+  const refresh = () => {
+    const url = freshSnap(src);
+    const probe = new Image();
+    probe.onload = () => {
+      // Same URL, so this is a cache hit off the probe - no second request and
+      // no flash between the old image and the new one.
+      img.src = url;
+    };
+    probe.src = url;
+  };
+
+  const setVisible = (visible: boolean) => img.classList.toggle('opacity-0', !visible);
+
+  const show = () => {
+    setVisible(true);
+    // Whatever is on screen may be minutes old by the time playback stops.
+    refresh();
+  };
+
+  const hide = () => setVisible(false);
+
+  const hideOnFirstFrame = () => {
+    // requestVideoFrameCallback fires when a frame has actually been presented,
+    // which is the exact moment the video stops being black.
+    if ('requestVideoFrameCallback' in video) video.requestVideoFrameCallback(() => hide());
+    // Frames are only presented while the tab is being drawn, so that callback
+    // can sit unfired indefinitely. A media clock that has moved on means there
+    // is a decoded frame to show, which is good enough to uncover.
+    video.addEventListener('timeupdate', hide, { once: true });
+  };
+
+  video.addEventListener('playing', hideOnFirstFrame);
+  video.addEventListener('pause', show);
+  // Stopping tears the source down, which empties the element rather than
+  // leaving a frame on screen.
+  video.addEventListener('emptied', show);
+
+  setVisible(video.paused);
+  // Catch up the build-time snapshot the page was served with.
+  refresh();
+}
+
 type FullscreenVideo = HTMLVideoElement & { webkitEnterFullscreen?: () => void };
 
 /**

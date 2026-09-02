@@ -22,6 +22,16 @@ const { source, poster, watermark = false } = Astro.props;
     muted
     playsinline></video>
 
+  <!-- The still shown before playback and whenever it is stopped. `src` is the
+       plain URL so the cache paints it instantly; player.ts revalidates it. -->
+  <img
+    data-poster
+    data-poster-src={poster}
+    src={poster}
+    alt=""
+    class="pointer-events-none absolute inset-0 size-full object-cover transition-opacity duration-200"
+  />
+
   {
     watermark && (
       <a
@@ -45,7 +55,7 @@ const { source, poster, watermark = false } = Astro.props;
 </div>
 
 <script>
-  import { attachStream, wireControls, ICONS } from '../lib/player';
+  import { attachPoster, attachStream, wireControls, ICONS } from '../lib/player';
 
   const stage = document.querySelector<HTMLElement>('[data-stage]');
   const video = stage?.querySelector<HTMLVideoElement>('[data-player]');
@@ -54,6 +64,8 @@ const { source, poster, watermark = false } = Astro.props;
     const controls = stage.querySelector<HTMLElement>('[data-controls]')!;
     const fsBtn = stage.querySelector<HTMLButtonElement>('[data-fullscreen]')!;
     fsBtn.innerHTML = ICONS.expand;
+
+    attachPoster(stage.querySelector<HTMLImageElement>('[data-poster]')!, video);
 
     const stream = attachStream(video, video.dataset.source!);
 

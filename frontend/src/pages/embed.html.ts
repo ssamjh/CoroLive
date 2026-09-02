@@ -52,6 +52,7 @@ const styles = `<style>
 
 const body = `<div id="player" style="position:relative;width:100%;height:100%;background:#000">
     <video id="video" style="display:block;width:100%;height:100%" autoplay muted playsinline></video>
+    <img id="poster" alt="" style="position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;pointer-events:none;border:0;transition:opacity 0.2s">
     <a id="watermark" href="https://corolive.nz" target="_blank" rel="noopener" style="position:absolute;right:10px;bottom:58px;opacity:0.8"><img src="https://corolive.nz/img/watermark.webp" alt="CoroLive" style="display:block;height:32px;width:auto;border:0"></a>
     <div id="corolive-controls" style="position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;padding:32px 12px 12px;opacity:0;transition:opacity 0.3s;background:linear-gradient(to top,rgba(0,0,0,0.8),rgba(0,0,0,0))">
         <button type="button" id="play" aria-label="Play" style="${BUTTON_STYLE}"></button>
@@ -76,6 +77,7 @@ ${styles}
     var video = document.getElementById('video');
     var controls = document.getElementById('corolive-controls');
     var playBtn = document.getElementById('play');
+    var poster = document.getElementById('poster');
     var fsBtn = document.getElementById('fullscreen');
 
     if (!Object.prototype.hasOwnProperty.call(STREAMS, camera)) {
@@ -83,7 +85,50 @@ ${styles}
         stage.style.display = 'none';
     } else {
         var source = API + '/memfs/' + STREAMS[camera] + '.m3u8';
-        video.poster = API + '/' + camera + '/snap.webp?rand=' + Math.random();
+        var snap = API + '/' + camera + '/snap.webp';
+
+        // ---- Still image ----------------------------------------------------
+        // The poster attribute alone is not enough: Firefox drops it as soon as
+        // the media element starts loading, so the box goes black until the
+        // first frame decodes, where Chromium holds the poster until then. An
+        // <img> we hide ourselves behaves the same everywhere.
+        //
+        // The plain URL paints from cache straight away, then a cache-busted
+        // copy loads off-screen and is swapped in only once decoded, so the
+        // visible still never blanks while we check for a newer one.
+        video.poster = snap;
+        poster.src = snap;
+
+        var refreshPoster = function () {
+            var url = snap + '?rand=' + Math.random();
+            var probe = new Image();
+            probe.onload = function () { poster.src = url; };
+            probe.src = url;
+        };
+
+        var showPoster = function () {
+            poster.style.opacity = '1';
+            // Whatever is on screen may be minutes old by the time it stops.
+            refreshPoster();
+        };
+
+        var hidePoster = function () { poster.style.opacity = '0'; };
+        video.addEventListener('playing', function () {
+            // requestVideoFrameCallback fires once a frame has actually been
+            // presented - the moment the video stops being black. Frames are
+            // only presented while the tab is drawn, though, so it can sit
+            // unfired indefinitely; a media clock that has moved on means there
+            // is a decoded frame to show, which is good enough to uncover.
+            if (video.requestVideoFrameCallback) {
+                video.requestVideoFrameCallback(hidePoster);
+            }
+            video.addEventListener('timeupdate', hidePoster, { once: true });
+        });
+        video.addEventListener('pause', showPoster);
+        // Stopping tears the source down, which empties the element rather
+        // than leaving a frame on screen.
+        video.addEventListener('emptied', showPoster);
+        refreshPoster();
 
         var play = function () {
             video.muted = true;

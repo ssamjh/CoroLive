@@ -19,6 +19,12 @@ services:
     volumes:
       - ./data:/usr/share/nginx/html:ro
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - type: bind
+        source: /mnt/nfs/corolive     # archived years live on the Docker host
+        target: /mnt/nfs/corolive
+        read_only: true
+        bind:
+          create_host_path: false     # fail instead of serving an empty directory
     read_only: true                 # container filesystem is immutable
     tmpfs:                          # ...except the few dirs nginx must write
       - /tmp

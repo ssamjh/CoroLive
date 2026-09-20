@@ -42,3 +42,12 @@ data/<camera>/archive/<YYYY>/<MM>/<DD>/index.json
 data/<camera>/archive/<YYYY>/<MM>/<DD>/thumbnail.avif
 data/<camera>/archive/<YYYY>/<MM>/<DD>/animation.webm
 ```
+
+## Historical archives
+
+The web container serves 2019–2025 directly from the Docker host at
+`/mnt/nfs/corolive/<camera>/archive/`. That directory is bind-mounted read-only
+at the same path inside the container. The current year remains in `data/`.
+
+When a completed year is moved into the historical archive, extend the year
+range in `nginx.conf` so requests for that year use the host mount.

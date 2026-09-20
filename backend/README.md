@@ -11,14 +11,27 @@ camera in `config/cameras.yaml`, it does:
 | Job       | When                          | Output                                   |
 |-----------|-------------------------------|------------------------------------------|
 | `snap`    | every minute                  | `<camera>/snap.webp` (live frontend frame)|
-| `archive` | every 2 min, 05:00–22:00      | a frame in today's `images.db` + `index.json` + `thumbnail.avif` |
-| `animate` | once, at the camera's `animation_at` | today's `animation.webm`          |
+| `archive` | every even minute, from astronomical dawn to 15 min after astronomical dusk | a frame in today's `images.db` + `index.json` + `thumbnail.avif` |
+| `animate` | once for all cameras at `COROLIVE_ANIMATE_AT` | today's `animation.webm`          |
 
-The schedule is just constants at the top of `corolive.py`. The camera list lives
-in `config/cameras.yaml`.
+The camera coordinates and elevation in metres live in `config/cameras.yaml`.
+Archive windows are calculated locally with Astral in the `Pacific/Auckland`
+timezone; no network lookup is involved. By default capture begins at
+astronomical dawn (sun 18 degrees below the horizon, when the first faint light
+appears) and ends 15 minutes after astronomical dusk (when evening twilight is
+over). Both twilight angles and the
+before/after margins can be overridden with the environment variables shown in
+`compose.yml`.
+
+Archive timestamps are always even minutes. The check is enforced where the
+database row is written, including for manually invoked archive jobs. The live
+`snap.webp` still refreshes every minute and is overwritten in place.
 
 `animate` runs in a background thread so the slow nightly encode never blocks the
 per-minute `snap`/`archive` jobs.
+
+Run the schedule tests with `python -m unittest -v test_corolive.py` from this
+directory after installing the Dockerfile's Python dependencies.
 
 ## Layout
 

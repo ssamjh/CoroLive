@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
-RUN pip install --no-cache-dir pyyaml
+RUN pip install --no-cache-dir pyyaml astral==3.2
 
 COPY corolive.py .
 

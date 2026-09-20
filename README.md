@@ -5,7 +5,6 @@ The Coromandel's live webcam network — [corolive.nz](https://corolive.nz)
 ```
 frontend/   the website: Astro + Tailwind static build, deployed to Cloudflare Pages
 backend/    camera ingest and restreaming (see backend/README.md)
-scripts/    snapshot capture and end-of-day archive processing, run by cron on the camera hosts
 ```
 
 `frontend/` is self-contained — its own `package.json`, and nothing outside it

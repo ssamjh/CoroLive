@@ -3,11 +3,11 @@
 CoroLive backend — one file, one loop.
 
 Captures camera frames, archives them into a per-day SQLite database, and
-encodes a nightly timelapse. Replaces the old cron + scripts/image.py setup.
+encodes a nightly timelapse.
 
 The loop wakes once a minute and, for each camera, does:
-  snap      every minute            — save a fresh live frame for the frontend
-  archive   every 2 min, 05:00–22:00 — store a frame in today's database
+  snap      every minute                 — save a fresh live frame for the frontend
+  archive   every even daylight minute   — store a frame in today's database
 
 Once a day, at ANIMATE_AT, every camera's timelapse is encoded one after
 another in a background thread — each runs in its own thread that we monitor
@@ -33,29 +33,62 @@ import sys
 import tempfile
 import threading
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
+from functools import lru_cache
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import yaml
+from astral import Observer
+from astral.sun import dawn, dusk
 
 # ---------------------------------------------------------------------------
-# Settings — change the schedule here.
+# Settings — override the schedule with environment variables if needed.
 # ---------------------------------------------------------------------------
 BASE_DIR = Path(os.environ.get("COROLIVE_BASE_DIR", "/data"))
 CONFIG_PATH = Path(os.environ.get("COROLIVE_CONFIG", "/config/cameras.yaml"))
 
-ARCHIVE_EVERY_MIN = 2     # archive a frame every N minutes
-ARCHIVE_START_HOUR = 5    # archive only between these hours (inclusive)
-ARCHIVE_END_HOUR = 22
+ARCHIVE_EVERY_MIN = 2
+TIMEZONE_NAME = os.environ.get("COROLIVE_TIMEZONE", "Pacific/Auckland")
+LOCAL_TIMEZONE = ZoneInfo(TIMEZONE_NAME)
+DAWN_DEPRESSION = float(os.environ.get("COROLIVE_DAWN_DEPRESSION", "18"))
+DUSK_DEPRESSION = float(os.environ.get("COROLIVE_DUSK_DEPRESSION", "18"))
+ARCHIVE_BEFORE_DAWN_MIN = int(os.environ.get("COROLIVE_BEFORE_DAWN_MIN", "0"))
+ARCHIVE_AFTER_DUSK_MIN = int(os.environ.get("COROLIVE_AFTER_DUSK_MIN", "15"))
 THUMBNAIL_NOON = 12 * 60 + 1   # minutes-since-midnight the thumbnail aims for
-ANIMATE_AT = os.environ.get("COROLIVE_ANIMATE_AT", "22:10")  # encode all timelapses at this local time
+ANIMATE_AT = os.environ.get("COROLIVE_ANIMATE_AT", "23:00")  # safely after astronomical dusk
 ANIMATE_POLL_SEC = 30     # how often to log progress while an encode runs
+
+# Keeps existing, gitignored cameras.yaml files working after deployment. New
+# cameras must provide latitude and longitude explicitly in cameras.yaml.
+DEFAULT_CAMERA_COORDINATES = {
+    "whitianga": (-36.8333, 175.7000),
+    "whangamata": (-37.2085, 175.8705),
+    "thames": (-37.1383, 175.5401),
+}
 
 
 def load_cameras():
     """Return the list of cameras from cameras.yaml. Re-read each loop so edits
     take effect without a restart."""
-    return yaml.safe_load(CONFIG_PATH.read_text())["cameras"]
+    cameras = yaml.safe_load(CONFIG_PATH.read_text())["cameras"]
+    for camera in cameras:
+        fallback = DEFAULT_CAMERA_COORDINATES.get(camera.get("name"))
+        if fallback:
+            camera.setdefault("latitude", fallback[0])
+            camera.setdefault("longitude", fallback[1])
+        if "latitude" not in camera or "longitude" not in camera:
+            raise ValueError(
+                f"camera {camera.get('name', '<unnamed>')} needs latitude and longitude"
+            )
+        camera["latitude"] = float(camera["latitude"])
+        camera["longitude"] = float(camera["longitude"])
+        camera["elevation"] = float(camera.get("elevation", 0))
+        if not -90 <= camera["latitude"] <= 90:
+            raise ValueError(f"invalid latitude for camera {camera['name']}")
+        if not -180 <= camera["longitude"] <= 180:
+            raise ValueError(f"invalid longitude for camera {camera['name']}")
+    return cameras
 
 
 # ---------------------------------------------------------------------------
@@ -68,6 +101,59 @@ def day_dir(camera, now):
 def ts_to_minutes(ts):
     h, m = ts.split(":")
     return int(h) * 60 + int(m)
+
+
+def local_now():
+    return datetime.now(LOCAL_TIMEZONE)
+
+
+def floor_to_archive_minute(value):
+    """Round down to an even minute so the first stored timestamp is even."""
+    value = value.replace(second=0, microsecond=0)
+    return value - timedelta(minutes=value.minute % ARCHIVE_EVERY_MIN)
+
+
+def ceil_to_archive_minute(value):
+    """Round up to an even minute so the configured daylight margin is kept."""
+    rounded = value.replace(second=0, microsecond=0)
+    if value > rounded:
+        rounded += timedelta(minutes=1)
+    remainder = rounded.minute % ARCHIVE_EVERY_MIN
+    if remainder:
+        rounded += timedelta(minutes=ARCHIVE_EVERY_MIN - remainder)
+    return rounded
+
+
+@lru_cache(maxsize=64)
+def solar_archive_window(day, latitude, longitude, elevation=0.0):
+    """Return the local, even-minute archive window for an observer and date."""
+    observer = Observer(latitude=latitude, longitude=longitude, elevation=elevation)
+    start = dawn(
+        observer, date=day, depression=DAWN_DEPRESSION, tzinfo=LOCAL_TIMEZONE
+    ) - timedelta(minutes=ARCHIVE_BEFORE_DAWN_MIN)
+    end = dusk(
+        observer, date=day, depression=DUSK_DEPRESSION, tzinfo=LOCAL_TIMEZONE
+    ) + timedelta(minutes=ARCHIVE_AFTER_DUSK_MIN)
+    return floor_to_archive_minute(start), ceil_to_archive_minute(end)
+
+
+def archive_window(camera, day):
+    return solar_archive_window(
+        day, camera["latitude"], camera["longitude"], camera.get("elevation", 0.0)
+    )
+
+
+def should_archive(camera, now):
+    """Hard archive invariant: inside daylight window and on an even minute."""
+    if now.tzinfo is None:
+        now = now.replace(tzinfo=LOCAL_TIMEZONE)
+    else:
+        now = now.astimezone(LOCAL_TIMEZONE)
+    if now.minute % ARCHIVE_EVERY_MIN != 0:
+        return False
+    start, end = archive_window(camera, now.date())
+    minute = now.replace(second=0, microsecond=0)
+    return start <= minute <= end
 
 
 def fetch_jpg(url, dest):
@@ -152,13 +238,13 @@ def save_snap(name, jpg):
         shutil.rmtree(tmp, ignore_errors=True)
 
 
-def save_archive(name, jpg):
+def save_archive(name, jpg, camera, now=None):
     """Store an already-fetched JPEG in today's database, and refresh
-    index.json + thumbnail. Does nothing outside the archive window or if this
-    minute is already stored."""
-    now = datetime.now()
+    index.json + thumbnail. Does nothing outside the solar archive window, on
+    odd minutes, or if this minute is already stored."""
+    now = now or local_now()
     minutes = now.hour * 60 + now.minute
-    if not (ARCHIVE_START_HOUR * 60 <= minutes <= ARCHIVE_END_HOUR * 60):
+    if not should_archive(camera, now):
         return
 
     ts = now.strftime("%H:%M")
@@ -198,13 +284,13 @@ def snap(name, url):
         shutil.rmtree(tmp, ignore_errors=True)
 
 
-def archive(name, url):
+def archive(camera):
     """Fetch a frame and store it in today's database."""
     tmp = Path(tempfile.mkdtemp())
     try:
         jpg = tmp / "in.jpg"
-        fetch_jpg(url, jpg)
-        save_archive(name, jpg)
+        fetch_jpg(camera["url"], jpg)
+        save_archive(camera["name"], jpg, camera, local_now())
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 
@@ -277,16 +363,18 @@ def run_all_animations():
     print("all animations done", flush=True)
 
 
-def run_camera_minute(name, url, now):
+def run_camera_minute(camera, now):
     """Grab this minute's frame for one camera with a single fetch: encode it as
     the live snap, and on the archive cadence also store it in the database."""
     tmp = Path(tempfile.mkdtemp())
+    name = camera["name"]
     try:
         jpg = tmp / "in.jpg"
-        fetch_jpg(url, jpg)
+        fetch_jpg(camera["url"], jpg)
         save_snap(name, jpg)
-        if now.minute % ARCHIVE_EVERY_MIN == 0:
-            save_archive(name, jpg)
+        # save_archive repeats the cadence check deliberately: direct and future
+        # call sites can never persist an odd-minute archive timestamp.
+        save_archive(name, jpg, camera, now)
     except Exception as e:
         print(f"{now:%H:%M} [{name}] error: {e}", flush=True)
     finally:
@@ -300,7 +388,7 @@ def run_minute(now):
     threads = []
     for cam in load_cameras():
         t = threading.Thread(
-            target=run_camera_minute, args=(cam["name"], cam["url"], now), daemon=True
+            target=run_camera_minute, args=(cam, now), daemon=True
         )
         t.start()
         threads.append(t)
@@ -322,9 +410,9 @@ def loop():
     while True:
         # wait for the top of the next minute, then do that minute's work — so a
         # mid-minute start doesn't grab an archive frame off-schedule.
-        now = datetime.now()
+        now = local_now()
         time.sleep(max(1, 60 - now.second - now.microsecond / 1e6))
-        run_minute(datetime.now())
+        run_minute(local_now())
 
 
 # ---------------------------------------------------------------------------
@@ -348,7 +436,7 @@ def main():
     if job == "snap":
         snap(name, cam["url"])
     elif job == "archive":
-        archive(name, cam["url"])
+        archive(cam)
     else:
         animate(name)
     print("done", flush=True)

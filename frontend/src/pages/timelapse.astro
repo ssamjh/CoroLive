@@ -199,15 +199,13 @@ const ids = CAMERAS.map((c) => c.id);
   // exercise exactly what the page ships.
 
   const NOW = nzNow();
-
-  // The archive for "today" isn't written until just after 06:00, so before
-  // 06:05 the newest selectable day is yesterday.
+  const DATE_PARAM = new URLSearchParams(location.search).get('date');
   const START_DATE = camera?.start ?? '';
-  const MAX_DATE = NOW.time < '06:05' ? addDays(NOW.date, -1) : NOW.date;
-  const DEFAULT_DATE = NOW.time < '06:00' ? addDays(NOW.date, -1) : NOW.date;
+  const MAX_DATE = NOW.date;
+  const DEFAULT_DATE = NOW.date;
 
-  const DATES = camera
-    ? selectedDates(new URLSearchParams(location.search).get('date'), {
+  let DATES = camera
+    ? selectedDates(DATE_PARAM, {
         start: START_DATE,
         max: MAX_DATE,
         fallback: DEFAULT_DATE,
@@ -215,7 +213,7 @@ const ids = CAMERAS.map((c) => c.id);
     : [];
   const archiveBase = (date: string) =>
     `${API}/${camera!.id}/archive/${date.replace(/-/g, '/')}`;
-  const DB_SOURCES = DATES.map((d) => ({ url: `${archiveBase(d)}/images.db`, date: d }));
+  let DB_SOURCES = DATES.map((d) => ({ url: `${archiveBase(d)}/images.db`, date: d }));
 
   // ---- Player --------------------------------------------------------------
 
@@ -249,6 +247,8 @@ const ids = CAMERAS.map((c) => c.id);
     const speedSel = $<HTMLSelectElement>('[data-speed]');
     const fsBtn = $<HTMLButtonElement>('[data-fullscreen]');
     const timeJumpEl = $<HTMLInputElement>('[data-timejump]');
+    const startEl = $<HTMLInputElement>('[data-start]');
+    const endEl = $<HTMLInputElement>('[data-end]');
     const container = $('#tlContainer');
     const controls = $('[data-controls]');
 
@@ -423,6 +423,7 @@ const ids = CAMERAS.map((c) => c.id);
       bytesEl.textContent = '';
 
       const res = await fetch(source.url);
+      if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
       const total = parseInt(res.headers.get('content-length') || '0');
       const reader = res.body!.getReader();
       const chunks: Uint8Array[] = [];
@@ -494,6 +495,19 @@ const ids = CAMERAS.map((c) => c.id);
             console.error(`Failed to load day ${i + 1}:`, e);
           }
         }
+
+        // A solar schedule means today's database may not exist on a winter
+        // morning. For the default view only, fall back to yesterday instead
+        // of showing an error. An explicitly requested date is never changed.
+        if (!frames.length && !DATE_PARAM && DATES.length === 1 && DATES[0] === NOW.date) {
+          const yesterday = addDays(NOW.date, -1);
+          DATES = [yesterday];
+          DB_SOURCES = [{ url: `${archiveBase(yesterday)}/images.db`, date: yesterday }];
+          frameEl.src = `${archiveBase(yesterday)}/thumbnail.avif`;
+          startEl.value = yesterday;
+          endEl.value = yesterday;
+          await loadDb(SQL, DB_SOURCES[0]!, 0);
+        }
         finishLoading();
       } catch (e) {
         console.error(e);
@@ -504,8 +518,6 @@ const ids = CAMERAS.map((c) => c.id);
     // ---- Date picker form --------------------------------------------------
     const rangeToggle = $<HTMLInputElement>('[data-range-toggle]');
     const endWrap = $('[data-end-wrap]');
-    const startEl = $<HTMLInputElement>('[data-start]');
-    const endEl = $<HTMLInputElement>('[data-end]');
     const form = $<HTMLFormElement>('[data-form]');
     const startLabel = $('[data-start-label]');
 

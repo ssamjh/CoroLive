@@ -1,15 +1,24 @@
 # Copy to cameras.yaml (gitignored) and fill in real URLs + credentials.
 #
-# All cameras' timelapses are encoded once a day at ANIMATE_AT (default 22:10),
+# All cameras' timelapses are encoded once a day at ANIMATE_AT (default 23:00),
 # one after another. Set the time with the COROLIVE_ANIMATE_AT env var (HH:MM).
 # Per-camera animation_at is no longer used.
 
 cameras:
   - name: whitianga
     url: "http://username:password@127.0.0.1/GetSnapshot"
+    latitude: -36.8333
+    longitude: 175.7000
+    elevation: 0 # metres above sea level; replace with the camera's actual elevation
 
   - name: whangamata
     url: "http://username:password@127.0.0.1/GetSnapshot"
+    latitude: -37.2085
+    longitude: 175.8705
+    elevation: 0 # metres above sea level; replace with the camera's actual elevation
 
   - name: thames
     url: "http://username:password@127.0.0.1/GetSnapshot"
+    latitude: -37.1383
+    longitude: 175.5401
+    elevation: 0 # metres above sea level; replace with the camera's actual elevation

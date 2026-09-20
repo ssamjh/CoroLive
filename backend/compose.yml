@@ -4,8 +4,13 @@ services:
     container_name: corolive-backend
     restart: unless-stopped
     environment:
-      TZ: Pacific/Auckland          # capture times use this timezone
-      COROLIVE_ANIMATE_AT: "22:10"  # encode all timelapses at this local time
+      TZ: Pacific/Auckland                 # container clock and local date
+      COROLIVE_TIMEZONE: Pacific/Auckland  # solar timezone; keep the same as TZ
+      COROLIVE_DAWN_DEPRESSION: "18"       # start angle: 6=civil, 12=nautical, 18=astronomical
+      COROLIVE_DUSK_DEPRESSION: "18"       # stop angle: 6=civil, 12=nautical, 18=astronomical
+      COROLIVE_BEFORE_DAWN_MIN: "6"        # start this many minutes before calculated dawn
+      COROLIVE_AFTER_DUSK_MIN: "6"         # stop this many minutes after calculated dusk
+      COROLIVE_ANIMATE_AT: "23:00"         # build timelapses after the final summer capture
     volumes:
       - ./data:/data                # all captured data lives here
       - ./config:/config:ro         # cameras.yaml (read-only)

@@ -1,6 +1,3 @@
 node_modules/
 dist/
 .astro/
-
-scripts/convert-todb-avif.py
-scripts/ARCHIVE-FORMAT.md

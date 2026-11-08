@@ -30,8 +30,10 @@ database row is written, including for manually invoked archive jobs. The live
 `animate` runs in a background thread so the slow nightly encode never blocks the
 per-minute `snap`/`archive` jobs.
 
-Run the schedule tests with `python -m unittest -v test_corolive.py` from this
-directory after installing the Dockerfile's Python dependencies.
+Python dependencies are managed with [uv](https://docs.astral.sh/uv/) in
+`pyproject.toml` and `uv.lock`. Run the schedule tests from this directory with
+`uv run python -m unittest -v test_corolive.py`; uv creates `.venv` and installs
+the locked dependencies on first run. Use `uv add`/`uv remove` to change them.
 
 ## Layout
 
@@ -43,7 +45,9 @@ backend/
     cameras.example.yaml # template
   data/                  # everything it produces (gitignored)
   Dockerfile
-  docker-compose.yml
+  compose.yml
+  pyproject.toml         # Python dependencies (managed by uv)
+  uv.lock                # locked dependency versions (committed)
 ```
 
 ## Data layout (under `data/`)

@@ -88,19 +88,20 @@ For a normal frontend change, verify with `npm run check`, `npm test`, and
 
 ## Backend commands
 
-Run backend tests from `backend/` after installing the dependencies listed in
-the Dockerfile:
+Python dependencies are managed with uv (`pyproject.toml` + committed
+`uv.lock`; change them with `uv add`/`uv remove`). Run backend tests from
+`backend/`:
 
 ```sh
-python -m unittest -v test_corolive.py
+uv run python -m unittest -v test_corolive.py
 ```
 
 One-shot jobs require a valid camera configuration and data directory:
 
 ```sh
-python corolive.py snap <camera>
-python corolive.py archive <camera>
-python corolive.py animate <camera>
+uv run corolive.py snap <camera>
+uv run corolive.py archive <camera>
+uv run corolive.py animate <camera>
 ```
 
 The deployed stack is defined in `backend/compose.yml`. Do not start, rebuild,
@@ -152,7 +153,7 @@ stream and snapshot URLs, backend archive paths, and nginx routing.
 - Run the smallest relevant checks while iterating, then the full checks for
   every part changed.
 - For frontend work: `npm run check`, `npm test`, and `npm run build`.
-- For backend work: `python -m unittest -v test_corolive.py`.
+- For backend work: `uv run python -m unittest -v test_corolive.py`.
 - For deployment or generated-output changes, inspect the resulting files or
   container configuration directly.
 - Review `git diff` and `git status` for accidental generated files, secrets,
